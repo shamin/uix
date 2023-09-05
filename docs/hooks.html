@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | Hooks</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="hooks">Hooks</h1>
+<p>UIx wraps existing React hooks to smooth over some rough spots and provide a more idiomatic interface for Clojure. <code>uix.core</code> exposes only the default React hooks, named equivalently to the JS versions except in kebab-case, e.g. <code>useEffect</code> becomes <code>use-effect</code>.</p>
+<p>There are multiple differences from pure React though.</p>
+<h2 id="dependency-array">Dependency array</h2>
+<p>Some hooks accept an array of dependencies as the second argument. While in pure React this has to be an array literal, <code>#js []</code>, UIx uses a vector literal <code>[]</code> to make it more idiomatic for Clojure.</p>
+<pre><code class="language-clojure">(uix/use-effect
+  (fn [] (prn x))
+  [x])
+</code></pre>
+<h2 id="how-are-dependencies-compared">How are dependencies compared?</h2>
+<p>When the same dependency has a different value between component updates, the hook will rerun.</p>
+<pre><code class="language-clojure">;; 1st update
+(uix/use-effect
+  (fn [] (prn x)) ;; prn 1
+  [x]) ;; x = 1
+
+;; 2nd update
+(uix/use-effect
+  (fn [] (prn x))
+  [x]) ;; x = 1, didn&#39;t change, do nothing
+
+;; 3rd update
+(uix/use-effect
+  (fn [] (prn x)) ;; prn 2
+  [x]) ;; x = 2, `x` has changed, rerun the hook
+</code></pre>
+<p>This works as expected for primitive values that map to identical constructs in JS like numbers and strings, but what about Clojure&#39;s maps and vectors that can be compared by value?</p>
+<blockquote>
+<p>TL;DR: As a rule of thumb, you should prefer to use only primitives as dependencies inside of a hook.</p>
+</blockquote>
+<p>In React, comparison is done by identity, not value, and in JS, while two primitives with the same value have the same identity, two objects with the same value do not. Since a Clojure map is compiled into a JS object, even if two maps has the same value, they will never have the same identity, meaning that React will always see them as different. In other words, comparison in React is done using JS&#39;s <code>===</code> or <code>Object.is</code>, not Clojure&#39;s <code>=</code>.</p>
+<p>Thus it&#39;s important to think about what type of values you are passing as dependencies of a hook. This principle applies to JS as well, as objects and arrays are still compared by reference.</p>
+<pre><code class="language-clojure">;; 1st update
+(let [a {:x 1}]
+  (uix/use-effect
+    (fn [] (prn a)) ;; executed
+    [a])))
+
+;; 2nd update
+(let [a {:x 1}]
+  (uix/use-effect
+    (fn [] (prn a)) ;; executed as well, since `a` is a new map that was created during render
+    [a])))
+
+;; 3rd update
+(let [a {:x 1}]
+  (uix/use-effect
+    (fn [] (prn a)) ;; same, still executed for the same reason
+    [a])))
+</code></pre>
+<h3 id="what-about-other-clojurescript-primitives">What about other ClojureScript primitives?</h3>
+<p>In addition to JavaScript primitives like <code>Number</code> or <code>String</code>, ClojureScript has keywords, symbols, and UUIDs that are represented as JS objects when compiled into JS and thus fall into the same trap with equality checks.</p>
+<p>To make things more idiomatic and less cumbersome in Clojure, UIx automatically stringifies those three types when passed in the dependency vector.</p>
+<h2 id="return-value-in-effect-hooks">Return value in effect hooks</h2>
+<p>The <em>setup</em> function, which is passed into one of the effect hooks, requires the return value to be either a function (that will be called on <em>cleanup</em>) or <code>js/undefined</code>. Otherwise React will throw an error saying that it got something else.</p>
+<pre><code class="language-clojure">(react/useEffect
+  (fn []
+    :keyword) ;; returning `:keyword` here will throw
+  #js [])
+</code></pre>
+<p>In ClojureScript, when an expression returns <em>nothing</em>, it actually returns <code>nil</code>, which is compiled into <code>null</code> in JS. Since <code>null</code> is neither a function nor <code>undefined</code> React will throw in this case as well.</p>
+<pre><code class="language-clojure">(react/useEffect
+  (fn []
+    (when false (prn :x))) ;; returns `nil` and thus React throws
+  #js [])
+</code></pre>
+<p>Thus when using React hooks directly you&#39;d have to explicitly return <code>js/undefined</code> in most cases.</p>
+<pre><code class="language-clojure">(react/useEffect
+  (fn []
+    (when false (prn :x))
+    js/undefined)
+  #js [])
+</code></pre>
+<p>This complication is also handled by UIx and if the return value is not a function it will automatically return <code>js/undefined</code>. However, keep in mind that since in Clojure the last expression is always returned implicitly, you still have to make sure the hook doesn&#39;t return a function accidentally, because it&#39;s going to be executed in its <em>cleanup</em> phase.</p>
+<p>In other words, React will never complain about the return value in UIx&#39;s effect hooks, unlike in pure React. And since Clojure has implicit return, make sure you don&#39;t return a function by accident.</p>
+<pre><code class="language-clojure">(uix/use-effect
+  (fn []
+    (when false (prn :x))) ;; `nil` is not a function, nothing from here
+  [])
+
+(uix/use-effect
+  (fn []
+    (map inc [1 2 3])) ;; return value is a collection, nothing wrong here either
+  [])
+
+  (uix/use-effect
+    (fn []
+      (map inc)) ;; return value is a function (transducer),
+    [])          ;; it&#39;s gonna be executed as a cleanup function,
+                 ;; is that intended?
+</code></pre>
+<h2 id="differences-from-use-callback-and-use-memo-hooks">Differences from <code>use-callback</code> and <code>use-memo</code> hooks</h2>
+<p>In pure React both the <code>use-callback</code> and <code>use-memo</code> hooks accept an optional dependency array. However, since the purpose of both hooks is memoization it generally doesn&#39;t make sense to call them without any dependencies; not providing the dependency array effectively means there&#39;s no memoization applied. In JavaScript this is enforced by an ESLint rule. In UIx on we simply removed the single arity method for those hooks, and so you must always pass a dependency vector.</p>
+<h2 id="use-ref-hook"><code>use-ref</code> hook</h2>
+<p>The <code>use-ref</code> hook returns an object that has a stable identity throughout the lifecycle of a component and allows storing arbitrary values inside of it. A ref is basically a mutable container bound to an instance of a component. This aligns pretty well with Clojure&#39;s <code>ref</code> types, namely <code>Atom</code> which is commonly used as a mutable container for immutable values.</p>
+<p>While in pure React <code>useRef</code> returns an object with a <code>current</code> property, in UIx <code>use-ref</code> returns the same object but with an API identical to <code>Atom</code>. The ref can be dereferenced using <code>@</code> to read the current value, and updated via <code>reset!</code> or <code>swap!</code> to set a new value.</p>
+<p>Note that unlike <code>r/atom</code> in Reagent, a ref in UIx and React is not a state primitive, it&#39;s a mutable value and doesn&#39;t trigger an update.</p>
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/helpful-small-thailand-254d0308?console=1" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="elements.html">👈 Prev “Elements”</a> <a class="nav-link" href="state.html">Next “State” 👉</a></footer>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

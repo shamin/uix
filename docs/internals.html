@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | Internals</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="internals">Internals</h1>
+<p>This document describes internals of UIx to give you a better overview how the library works internally.</p>
+<h2 id="high-level-overview">High level overview</h2>
+<p>On the surface UIx is a wrapper for React.js, it consists of two packages: <code>uix.core</code> and <code>uix.dom</code>, the former wraps <code>react</code> and the latter wraps <code>react-dom</code>.</p>
+<p><img src="uix_internals_1.png" alt=""></p>
+<h2 id="uixdom-package">uix/dom package</h2>
+<p><code>uix.dom</code> namespace is a thin wrapper around <code>react-dom</code> API, as simple as that. <code>uix.dom.server</code> is a custom made serializer that allows to render UIx components on JVM (of course third-party JS components won&#39;t run on JVM, so the JVM renderer is mostly useful for purely UIx made UIs or HTML templating, think static website generators).</p>
+<h2 id="uixcore-package">uix/core package</h2>
+<p>This one is a lot more involved. While the core package wraps a public API from <code>react</code>, it also makes hooks nicer, runs an internal linter and compiles components and UI structure into a more efficient code.</p>
+<h3 id="defui-and-fn-macros"><code>defui</code> and <code>fn</code> macros</h3>
+<p><code>defui</code> is how you define a UIx component. What the macro is doing? Multiple things:</p>
+<ol>
+<li>Handles props passing, to make sure that Clojure&#39;s data structures can be used as component props, otherwise React will destroy them when validating props object</li>
+<li>Emits React component when compiling as ClojureScript and a plain function when running on JVM</li>
+<li>Injects <code>react-refresh</code> setup for <a href="/docs/hot-reloading.md">hot-reloading</a> in dev</li>
+<li>Assigns readable component name to improve debugging (those names are printed in stack traces and in React DevTools)</li>
+<li>Makes sure that a component is a single-arity function that takes a map of props</li>
+<li>Runs a <a href="/docs/code-linting.md">linter</a> on component&#39;s body</li>
+</ol>
+<p><code>uix.core/fn</code> macro is similar to <code>defui</code>, but should be used to create anonoymous components, which is useful for <a href="https://reactjs.org/docs/render-props.html">render props technique</a>.</p>
+<h3 id="-macro"><code>$</code> macro</h3>
+<p><code>$</code> is basically <code>React.createElement</code>, but with API that makes it nicer to use in Clojure world. Here&#39;s what it does:</p>
+<ol>
+<li>Runs a linter that validates element syntax</li>
+<li>Compiles DOM elements into Clojure-less code, for performance, when possible</li>
+</ol>
+<h4 id="element-compiler">Element compiler</h4>
+<p>This part, while there&#39;s not much code to it, is probably where the most of complexity in UIx lives.</p>
+<p><code>uix.compiler.aot</code> namespace (ahead of time compiler) takes care of compiling <code>$</code> elements to ClojureScript that is as close as possible to plain JS from performance standpoint. The compilation process boils down to transforming something like <code>($ :div {:on-click on-click} ...)</code> into <code>(react/createElement &quot;div&quot; #js {:onClick on-click} ...)</code>. The end goal is to have as less Clojure data types as possible in the end to achieve best performance.</p>
+<p>The compiler is not strict and makes a set of tradeoffs to provide flexibility for developers. Thus it&#39;s allowed to have dynamic (resolved at runtime) props, although in that case props map will be interpreted at runtime.</p>
+<h3 id="hooks">Hooks</h3>
+<p>UIx wraps all React&#39;s default hooks and adds an extra layer to hide differences between JS and Clojure world, to make sure that writing is a bit less annoying:</p>
+<ol>
+<li>Compiles vector of deps into JS array</li>
+<li>Runs a linter to check for invalid usages of deps</li>
+<li>Handles React&#39;s requirement to return either a function or <code>js/undefined</code> from a hook in a way that <code>nil</code> becomes acceptable return value as well</li>
+</ol>
+<h3 id="linter">Linter</h3>
+<p><code>uix.linter</code> implements a built-in linter that takes care of validating components and hooks. The linter is extensible via <a href="/docs/code-linting.md#custom-linters">public API</a>.</p>
+<p>The linter leverages ClojureScript&#39;s analyazer to retrieve information about code structure at compile-time. This data provides info about local and global vars, usages of vars, and of course the data structure representing the code being analyzed.</p>
+<p>When analyzing the linter collects and reports errors into ClojureScript&#39;s analyzer, that then takes care of printing those errors in terminal, failing a build and propagating them into shadow-cljs&#39;s on screen error display.</p>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="utilities.html">👈 Prev “Utilities”</a> <div></div></footer>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

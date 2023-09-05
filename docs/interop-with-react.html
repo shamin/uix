@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | Interop With React</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="interop-with-react">Interop with React</h1>
+<h2 id="using-react-components-in-uix">Using React components in UIx</h2>
+<p>In the <a href="/docs/elements.md">“Elements”</a> section it was briefly mentioned that React components written in JavaScript can be used in the <code>$</code> macro, but with a difference in how props are passed into such a component.</p>
+<p>As an example, let&#39;s say we have <code>Button</code> component that we want to use in a UIx component.</p>
+<pre><code class="language-js">function Button({ onClick, title, style, className, children }) {
+  return (
+    &lt;button onClick={onClick} title={title} style={style} className={className}&gt;
+      {children}
+    &lt;/button&gt;
+  );
+}
+</code></pre>
+<p>Here’s how to use it in UIx:</p>
+<pre><code class="language-clojure">($ Button
+  {:on-click #(js/console.log :click)
+   :title &quot;this is a button&quot;
+   :style {:border &quot;1px solid red&quot;}
+   :class :button}
+  &quot;press me&quot;)
+</code></pre>
+<p>When a non-UIx component is passed into <code>$</code>, the props map is converted into JS object using the following set of rules:</p>
+<ol>
+<li><p>kebab-cased keys are automatically converted into camel-cased keys.</p>
+<ul>
+<li>Similarly to props in a DOM element, the following keys are renamed into their React counterparts:<ul>
+<li><code>:class</code> -&gt; <code>&quot;className&quot;</code></li>
+<li><code>:for</code> -&gt; <code>&quot;htmlFor&quot;</code></li>
+<li><code>:charset</code> -&gt; <code>&quot;charSet&quot;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>When a component expects a kebab-cased key, it can be passed as a string to avoid conversion.</p>
+</li>
+<li><p>props map is converted <em>shallowly</em> into a JavaScript object, meaning that nested collections and maps are not converted. If a JS component expects a prop to hold an array or an object, you have to pass it explicitly. There are two exceptions though:</p>
+<ul>
+<li><code>:style</code> map is always converted into a JS object because it&#39;s a common prop, when passing styles into a third-party component.</li>
+<li>Keyword values are converted into strings.</li>
+</ul>
+</li>
+</ol>
+<h2 id="using-uix-components-in-react">Using UIx components in React</h2>
+<p>Now the other way around, we want to use a UIx component in a React component.</p>
+<p>To achieve this we have to write interop layer using <code>uix.core/as-react</code> helper that takes a function which will take React props as a bean and call the UIx component.</p>
+<blockquote>
+<p>Note that <code>as-react</code> doesn’t transform camel case keys into kebab case.</p>
+</blockquote>
+<pre><code class="language-clojure">(defui button [{:keys [on-click children]}]
+  ($ :button {:on-click on-click}
+    children))
+
+(def Button
+  (uix.core/as-react
+    (fn [{:keys [onClick children]}]
+      ($ button {:on-click onClick :children children}))))
+</code></pre>
+<p>Now <code>Button</code> can used as a normal React component.</p>
+<pre><code class="language-js">&lt;Button onClick={console.log}&gt;press me&lt;/Button&gt;
+</code></pre>
+<h3 id="on-ref-forwarding">On <code>ref</code> forwarding</h3>
+<p>Some third party React components can inject a <code>ref</code> into a child element, which requires doing <a href="https://react.dev/reference/react/forwardRef">ref forwarding</a>. It&#39;s not needed when passing refs between UIx, but is still required for a case when non-UIx component injects a ref into UIx element.</p>
+<p>For this specific case there&#39;s <code>uix.core/forward-ref</code>, which should be used exclusively in such cases. The helper takes care of merging and converting props.</p>
+<blockquote>
+<p>Note that <code>forward-ref</code> also doesn’t transform camel case keys into kebab case.</p>
+</blockquote>
+<pre><code class="language-clojure">(defui button [{:keys [ref children on-click onMouseDown]}]
+  ;; both `ref` and `onMouseDown` were injected by `Menu`
+  ...)
+
+(def button-forwarded
+  (uix/forward-ref button))
+
+($ Menu
+  ($ button-forwarded {:on-click handle-click}
+    &quot;press me))
+</code></pre>
+<h2 id="error-boundaries">Error boundaries</h2>
+<p>Although <a href="https://reactjs.org/docs/error-boundaries.html">error boundaries</a> aren&#39;t fully supported in functional React components, its still possible to use them in UIx as class-based components.</p>
+<p>Error boundaries are SSR compatible in UIx.</p>
+<pre><code class="language-clojure">(def error-boundary
+  (uix.core/create-error-boundary
+   {:derive-error-state (fn [error]
+                          {:error error})
+    :did-catch          (fn [error info]
+                          (logging/error &quot;Component did catch&quot; error)
+                          info)}
+   (fn [[state set-state!] {:keys [children]}]
+     (if-some [error (:error state)]
+       ($ :&lt;&gt;
+         ($ :p.warning &quot;There was an error rendering!&quot;)
+         ($ :pre (pr-str error)))
+       children))))
+
+(defui users [{:keys [users]}]
+  ($ :&lt;&gt;
+    ($ error-boundary
+      ($ user-list {:users users})
+      ($ :button &quot;Load more ...&quot;))
+    ($ :a &quot;Back home&quot;)))
+</code></pre>
+<p><code>derive-error-state</code> is used to return a value that can be read by the render function passed to <code>uix.core/create-error-boundary</code>. You can use this function to parse an exception to a more friendly format, for example. <code>did-catch</code> will be called with the exception object and any additional info. In JS the <code>info</code> will be the component stack trace. In the JVM <code>info</code> will be the name of the error boundary.</p>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="effects.html">👈 Prev “Effects”</a> <a class="nav-link" href="interop-with-reagent.html">Next “Interop With Reagent” 👉</a></footer>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

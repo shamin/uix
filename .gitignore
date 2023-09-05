@@ -3,3 +3,4 @@
 resources/public/out
 resources/public/benchmark.js
 target
+node_modules

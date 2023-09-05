@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | Server Side Rendering</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="server-side-rendering">Server-side rendering</h1>
+<ul>
+<li><a href="#public-api">Public API</a></li>
+<li><a href="#how-to-write-cross-platform-ui-code">How to write cross-platform UI code</a></li>
+<li><a href="#hooks">Hooks</a></li>
+</ul>
+<p><code>uix.dom.server</code> namespace implements React&#39;s server-side rendering in Clojure enabling UIx components serialization to HTML on JVM.</p>
+<pre><code class="language-clojure">(ns my.app
+  (:require [uix.core :refer [defui $]]
+            [uix.dom.server :as dom.server]))
+
+(defui title-bar []
+  ($ :div.title-bar
+    ($ :h1 &quot;Hello&quot;)))
+
+(dom.server/render-to-static-markup ($ title-bar))
+;; &quot;&lt;div class=\&quot;title-bar\&quot;&gt;&lt;h1&gt;Hello&lt;/h1&gt;&lt;/div&gt;&quot;
+</code></pre>
+<h2 id="public-api">Public API</h2>
+<p>Similar to <code>react-dom/server</code> API there are two functions to render UIx components to HTML string and their streaming counterparts:</p>
+<ul>
+<li><code>uix.dom.server/render-to-static-markup</code> and <code>uix.dom.server/render-to-static-stream</code> — generates HTML string, can be used for templating</li>
+<li><code>uix.dom.server/render-to-string</code> and <code>uix.dom.server/render-to-stream</code> — generates HTML string that will be hydarated by React on the front-end, when HTML document is loaded</li>
+</ul>
+<h2 id="how-to-write-cross-platform-ui-code">How to write cross-platform UI code</h2>
+<p>When UI should be rendered on JVM and hydrated on the client, that essentially means that same UI code should be able to run in both Clojure/JVM and ClojureScript/JS environments.</p>
+<p>For that it&#39;s recommended to put shared code in <code>.cljc</code> namespaces and use <a href="https://clojure.org/guides/reader_conditionals">reader conditionals</a> for platform specific code.</p>
+<pre><code class="language-clojure">;; ui.cljc
+(ns app.ui
+  (:require [uix.core :refer [defui $]]))
+
+(defui title-bar []
+  ($ :div.title-bar
+    ($ :h1 &quot;Hello&quot;)
+    ;; js/console.log doesn&#39;t exist on JVM, thus the code
+    ;; should be included only for ClojureScript
+    ($ :button {:on-click #?(:cljs #(js/console.log %)
+                             :clj nil)}
+       &quot;+&quot;)))
+
+;; server.clj
+(ns app.server
+  (:require [uix.core :refer [$]]
+            [uix.dom.server :as dom.server]
+            [app.ui :as ui]))
+
+(defn handle-request
+  &quot;Generates HTML to be sent to the client&quot;
+  []
+  (dom.server/render-to-static-markup ($ ui/title-bar)))
+
+;; client.cljs
+(ns app.client
+  (:require [uix.core :refer [$]]
+            [uix.dom :as dom.client]
+            [app.ui :as ui]))
+
+;; Hydrates server generated HTML into dynamic React UI
+(dom.client/hydrate-root (js/document.getElementById &quot;root&quot;) ($ ui/title-bar))
+</code></pre>
+<h2 id="hooks">Hooks</h2>
+<p>Only a subset of Hooks runs when server rendering. Read React docs to understand how hooks work when server rendering.</p>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="migrating-from-reagent.html">👈 Prev “Migrating From Reagent”</a> <a class="nav-link" href="hot-reloading.html">Next “Hot Reloading” 👉</a></footer>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

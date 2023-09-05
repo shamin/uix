@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | Elements</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="elements">Elements</h1>
+<p>UIx is using <code>$</code> to create elements that describe UI structure. There are 3 main types of elements: DOM elements, UIx component instances, and interop elements.</p>
+<h2 id="dom-elements">DOM elements</h2>
+<p><code>$</code> takes a tag name keyword, an optional map of attributes, and zero or more child elements.</p>
+<pre><code class="language-clojure">($ :button {:title &quot;Submit&quot;} &quot;press me&quot;)
+</code></pre>
+<p>Element name is declared as a keyword with optional <code>id</code> and <code>class</code> attributes defined as a part of the name. Together they resemble CSS selector syntax.</p>
+<pre><code class="language-clojure">($ :div) ;; &lt;div&gt;&lt;/div&gt;
+($ :h1.heading {:class &quot;h1&quot;} &quot;👋&quot;) ;; &lt;h1 class=&quot;heading h1&quot;&gt;👋&lt;/h1&gt;
+($ :button#id.class1.class2) ;; &lt;button id=&quot;id&quot; class=&quot;class1 class2&quot;&gt;&lt;/button&gt;
+</code></pre>
+<h2 id="uix-component-instances">UIx component instances</h2>
+<p>Component instances are also created via the <code>$</code> macro call, where the first argument is the component function itself, the second argument is an optional map of props, and the rest are child elements.</p>
+<pre><code class="language-clojure">(defui button [{:keys [on-click children]}]
+  ($ :button.btn {:on-click on-click}
+    children))
+
+($ button {:on-click #(js/console.log :click)}
+  &quot;press me&quot;)
+</code></pre>
+<h2 id="react-component-instances">React component instances</h2>
+<p>React components written in JavaScript can be used directly in UIx with a minor differences in how props are passed into a component. See more detalis on the <a href="/docs/interop-with-react.md">“Interop with React”</a> page.</p>
+<pre><code class="language-clojure">($ Button {:on-click #(js/console.log :click)}
+  &quot;press me&quot;)
+</code></pre>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="components.html">👈 Prev “Components”</a> <a class="nav-link" href="hooks.html">Next “Hooks” 👉</a></footer>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

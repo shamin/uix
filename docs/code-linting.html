@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | Code Linting</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="hooks-linter">Hooks linter</h1>
+<p>UIx has a built-in linter that will help you to use React Hooks correctly. The linter is built into <code>defui</code> and the default <code>uix.core/*</code> hooks, and implements a set of rules from React&#39;s official <a href="https://reactjs.org/docs/hooks-rules.html">ESLint plugin</a>.</p>
+<p>While in the original ESLint plugin there are rules that can be considered as suggestions and thus reported as warnings, most of the rules implemented in UIx should always be followed as breaking them will lead to bugs in your UI. For this reason in UIx a broken rule will fail to build so that it&#39;s impossible to build a project with problematic behaviour in UI components.</p>
+<h2 id="whats-the-rule-of-thumb-to-use-hooks-correctly">What&#39;s the rule of thumb to use Hooks correctly?</h2>
+<p>Call hooks at the top level in the component body.</p>
+<pre><code class="language-clojure">;; bad
+(defui component [{:keys [active?]}]
+  (when active?
+    (use-effect ...))
+  ...))
+
+;; good
+(defui component [{:keys [active?]}]
+  (use-effect
+    (fn []
+      (when active?
+        ...)))
+  ...))
+</code></pre>
+<p>List all necessary dependencies in deps vector for hooks that require dependencies.</p>
+<pre><code class="language-clojure">;; bad
+(defui component [{:keys [active? id]}]
+  (use-effect
+    (fn []
+      (when active?
+        (rf/dispatch :user/set-id {:id id})))
+    [active?])
+  ...))
+
+;; good
+(defui component [{:keys [active? id]}]
+  (use-effect
+    (fn []
+      (when active?
+        (rf/dispatch :user/set-id {:id id})))
+    [active? id])
+  ...))
+</code></pre>
+<h2 id="what-type-of-errors-can-uix-catch">What type of errors can UIx catch?</h2>
+<h3 id="hooks-called-inside-of-conditions-or-iterating-functions">Hooks called inside of conditions or iterating functions</h3>
+<p>The rule here is to call the function at the top level of the component body.</p>
+<pre><code class="language-clojure">(defui component [{:keys [active?]}]
+  (when active?
+    (use-effect ...)) ;; error
+  ...))
+
+(defui component [{:keys [items]}]
+  (for [item items]
+    ($ list-item
+      {:item item
+                 ;; error
+       :on-click (use-callback #(rf/dispatch %) [item])}))))
+</code></pre>
+<h3 id="a-hook-doesnt-meet-its-dependencies-requirements">A hook doesn&#39;t meet its dependencies requirements</h3>
+<blockquote>
+<p>This rule is currently experimental, to opt-out add <code>^:lint/disable</code> meta in front of the deps vector</p>
+</blockquote>
+<p>This rule will check for missing and unnecessary dependencies and suggest a correct deps vector.</p>
+<pre><code class="language-clojure">(defui component [{:keys [active? id]}]
+  (use-effect
+    (fn []
+      (when active?
+        (rf/dispatch :user/set-id {:id id})))
+    [active?]) ;; error, update deps vector to [active? id]
+  ...))
+</code></pre>
+<h3 id="unsafe-set-state-in-effect-hook-without-dependencies">Unsafe set-state in effect hook without dependencies</h3>
+<p>This type of code leads to an infinite loop of updates in components.</p>
+<pre><code class="language-clojure">(defui component [{:keys [active? id]}]
+  (let [[value set-value] (use-state 0)]
+    (use-effect
+      (fn []
+        (set-value (inc value)))))) ;; error
+
+(defui component [{:keys [active? id]}]
+  (let [[value set-value] (use-state 0)]
+    (use-effect
+      (fn []
+        (set-value (inc value)))
+      [value]))) ;; fix: only run hook when value changes
+</code></pre>
+<h3 id="a-hook-is-being-passed-something-as-deps-that-is-not-a-vector-literal">A hook is being passed something as deps that is not a vector literal</h3>
+<p>Deps should be always a vector literal of constant size. React doesn&#39;t allow deps to be of dynamic length because it causes issues in UI components.</p>
+<pre><code class="language-clojure">;; incorrect
+(defui component [{:keys [labels]}]
+  (let [dimensions (use-memo #(measure-labels labels) labels)]
+    ...))
+
+;; correct
+(defui component [{:keys [labels]}]
+  (let [dimensions (use-memo #(measure-labels labels) [labels])]
+    ...))
+</code></pre>
+<h3 id="a-hook-is-being-passed-deps-as-a-js-array-instead-of-a-vector">A hook is being passed deps as a JS array instead of a vector</h3>
+<p>This is UIx specific. Since UIx is a Clojure wrapper it expects a vector of deps instead of JS array to be more idiomatic and allow for easier interop with Clojure code.</p>
+<pre><code class="language-clojure">(defui component [{:keys [html]}]
+  (let [html (use-memo #(sanitize-html html) #js [html])] ;; incorrect
+    ...))
+
+(defui component [{:keys [html]}]
+  (let [html (use-memo #(sanitize-html html) [html])] ;; correct
+    ...))
+</code></pre>
+<h3 id="a-function-reference-is-passed-into-a-hook-instead-of-an-inline-function">A function reference is passed into a hook instead of an inline function</h3>
+<p>This won&#39;t cause actual bugs, but it prevents further type checking to determine if the hook satisfies dependency requirements, thus it&#39;s encouraged to use inline function instead. Note that the linter might improve in the future and this rule will be deprecated.</p>
+<pre><code class="language-clojure">(defui component [{:keys [active? id]}]
+  (let [do-something (fn []
+                       (when active?
+                         (rf/dispatch :user/set-id {:id id})))]
+    ;; deps are correct, but it still gonna error
+    (use-effect do-something [active? id])))
+
+(defui component [{:keys [active? id]}]
+  (let [do-something (fn [active? id]
+                       (when active?
+                         (rf/dispatch :user/set-id {:id id})))]
+  ;; now linter is able to check whether the effect meets deps requirements correctly
+  (use-effect #(do-something active? id) [active? id])))
+</code></pre>
+<h1 id="missing-key-attribute">Missing <code>:key</code> attribute</h1>
+<p>UIx will check for missing <code>:key</code> attribute when a UIx element is rendered as a list item (via <code>for</code>, <code>map</code>, etc.).</p>
+<pre><code class="language-clojure">(for [x items]
+  ($ item {:title &quot;hello&quot; :x x})) ;; error: missing key
+
+(for [x items]
+  ($ item {:title &quot;hello&quot; :x x :key x})) ;; no error
+</code></pre>
+<h2 id="config">Config</h2>
+<p>UIx&#39;s linter can be provided with an external configuration that should live in the file <code>.uix/config.edn</code> at the root of your project.</p>
+<pre><code class="language-clojure">{:linters {:react-key {:enabled? false}}}
+;; the rule is enabled by default
+</code></pre>
+<h1 id="reagent-interop-linter">Reagent interop linter</h1>
+<p>When migrating from Reagent + re-frame to UIx you might want to keep using re-frame or at least stick with it for some time because migrating data management is not as simple as rewriting UI components.</p>
+<p>To make sure this transition path is smooth UIx will check for re-frame <code>subscribe</code> calls in UIx components and trigger a compilation error that will suggest the use of a <code>use-subscribe</code> hook instead. It will also point to the <a href="https://github.com/pitch-io/uix/blob/master/docs/interop-with-reagent.md#syncing-with-ratoms-and-re-frame">“Syncing with ratoms and re-frame”</a> section in UIx docs.</p>
+<p>Given this piece of code</p>
+<pre><code class="language-clojure">(defui component []
+  (rf/subscribe [:user/id]))
+</code></pre>
+<p>You&#39;ll get the following compilation error</p>
+<pre><code>re-frame subscription (rf/subscribe [:user/id])) is non-reactive in UIx components when called via re-frame.core/subscribe, use `use-subscribe` hook instead.
+
+Read https://github.com/pitch-io/uix/blob/master/docs/interop-with-reagent.md#syncing-with-ratoms-and-re-frame for more context
+</code></pre>
+<h2 id="config-1">Config</h2>
+<p>It is possible to add re-frame specific rules to the linter config file (located in the file <code>.uix/config.edn</code> at the root of your project).</p>
+<pre><code class="language-clojure">{:linters
+ {:re-frame
+  {:resolve-as {my.app/subscribe re-frame.core/subscribe}}}}
+  ;; re-frame.core/subscribe is checked by default
+</code></pre>
+<h1 id="custom-linters">Custom linters</h1>
+<p>UIx exposes a public API to register custom linters, so that you can have your own linting rules specific to your project. There are three types of linters in UIx:</p>
+<ul>
+<li>Component linters <code>uix.linter/lint-component</code> — those execute on entire <code>defui</code> form</li>
+<li>Element linters <code>uix.linter/lint-element</code> — execute per <code>$</code> form</li>
+<li>Hook linters <code>uix.linter/lint-hook-with-deps</code> — execute for every Hook form that takes deps (<code>use-effect</code>, <code>use-callback</code>, etc.)</li>
+</ul>
+<p>See <a href="/core/dev/uix/linters.clj">core/dev/uix/linters.clj</a> for a set of complete examples.</p>
+<h1 id="clj-kondo">clj-kondo</h1>
+<p>UIx has importable configuration for clj-kondo. You can important the configuration with:</p>
+<pre><code class="language-bash">clj-kondo --lint &quot;$(clojure -Spath)&quot; --copy-configs --skip-lint
+</code></pre>
+<p>There is only one custom hook, which validates the arguments passed to <code>uix.core/$</code>. </p>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="react-devtools.html">👈 Prev “React Devtools”</a> <a class="nav-link" href="utilities.html">Next “Utilities” 👉</a></footer>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

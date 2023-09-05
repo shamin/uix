@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | Effects</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="effects">Effects</h1>
+<p>UIx provides a way to perform side effects in components via <a href="https://reactjs.org/docs/hooks-effect.html">React’s effect hook</a>. Effects are useful for making HTTP requests, interacting with the DOM, or performing any kind of impure operation that mutates some global state and might need to be cleaned up at some point in the future.</p>
+<p>The <code>uix.core/use-effect</code> function wraps React&#39;s <code>useEffect</code> hook and takes care of handling certain inconsistencies between JS and Clojure worlds so that you don&#39;t have to. More information about effect hook is available in <a href="https://reactjs.org/docs/hooks-effect.html">React documentation on effect hook</a>.</p>
+<p>In the example below, the effect&#39;s callback will execute and bring up an alert after every update of the component.</p>
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/busy-late-architect-3778b7f8" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
+
+<p>An optional dependencies vector allows conditional execution of an effect. In the example above, dependencies are not passed into the effect causing it to execute on every update of the component. <a href="https://reactjs.org/docs/hooks-reference.html#conditionally-firing-an-effect">Read more about conditional effect execution in React docs</a>.</p>
+<p>In the example below the effect will be executed every time when a number of <code>clicks</code> becomes a multiple of 5.</p>
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/glamorous-whining-zebra-15d4d34d" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="state.html">👈 Prev “State”</a> <a class="nav-link" href="interop-with-react.html">Next “Interop With React” 👉</a></footer>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

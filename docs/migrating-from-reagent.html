@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | Migrating From Reagent</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="migrating-from-reagent">Migrating from Reagent</h1>
+<p>This document describes how to migrate Reagent components to UIx, including syntactical differences and how various patterns in Reagent translate to UIx. UIx doesn&#39;t provide any abstractions on top of React, thus it is recommended to make yourself familiar with React in general.</p>
+<h2 id="element-syntax">Element syntax</h2>
+<p><code>$</code> macro instead of vector-based Hiccup</p>
+<pre><code class="language-clojure">;; Reagent
+[:div#id.class {:on-click f}
+  [:div]]
+
+;; UIx
+($ :div#id.class {:on-click f}
+  ($ :div))
+</code></pre>
+<h2 id="component-syntax">Component syntax</h2>
+<p><code>uix.core/defui</code> macro instead of <code>defn</code></p>
+<pre><code class="language-clojure">;; Reagent
+(defn avatar [{:keys [src]}]
+  [:img {:src src}])
+
+;; UIx
+(defui avatar [{:keys [src]}]
+  ($ :img {:src src}))
+</code></pre>
+<h2 id="local-state">Local state</h2>
+<p><code>uix.core/use-state</code> hook instead of <code>r/with-let</code> or a closure + <code>r/atom</code></p>
+<pre><code class="language-clojure">;; Reagent
+(defn counter [props]
+  (let [state (r/atom 0)]
+    (fn [props]
+      [:button {:on-click #(swap! state inc)} @state])))
+
+(defn counter [props]
+  (r/with-let [state (r/atom 0)]
+    [:button {:on-click #(swap! state inc)} @state]))
+
+;; UIx
+(defui counter [props]
+  (let [[value set-value!] (uix/use-state 0)]
+    ($ :button {:on-click #(set-value! inc)} value)))
+</code></pre>
+<h2 id="component-props">Component props</h2>
+<p>A single map of props instead of arbitrary positional arguments</p>
+<pre><code class="language-clojure">;; Reagent, positional arguments
+(defn button [{:keys [on-click]} text]
+  …)
+
+[button {:on-click f} &quot;press&quot;]
+
+;; UIx, a single argument of props
+(defui button [{:keys [on-click text]}]
+  …)
+
+($ button {:on-click f :text &quot;press&quot;})
+</code></pre>
+<h3 id="child-elements-in-props">Child elements in props</h3>
+<p>Child elements are always put under <code>:children</code> key in props map, instead of being positional arguments</p>
+<pre><code class="language-clojure">;; Reagent, positional arguments
+(defn button [{:keys [on-click]} text]
+  …)
+
+[button {:on-click f} &quot;press&quot;]
+
+;; UIx, :children key in props map
+(defui button [{:keys [on-click children]}]
+  …)
+
+($ button {:on-click f} &quot;press&quot;)
+</code></pre>
+<p>While arguably in Reagent a one-to-one mapping between arguments and parameters is more straightforward than having implicit <code>:children</code> key in React/Ux, the ergonomics of this approach becomes more apparent when one needs to &quot;insert&quot; <code>children</code> into UI tree.</p>
+<pre><code class="language-clojure">;; Reagent
+(defn button [{:keys [on-click]} &amp; children] ;; rest args
+  ;; splicing into Hiccup form
+  (into [:button {:on-click on-click}]
+    children))
+
+[button {:on-click f} &quot;press&quot; &quot;me&quot;]
+
+;; UIx
+(defui button [{:keys [on-click children]}] ;; :children key
+  ;; passing `children` as is
+  ($ :button {:on-click on-click} children))
+
+($ button {:on-click f} &quot;press&quot;)
+</code></pre>
+<h2 id="key-attribute-in-child-elements"><code>key</code> attribute in child elements</h2>
+<pre><code class="language-clojure">;; Reagent
+(defn ui-list [{:keys [items]}]
+  [:ul
+    (for [item items]
+      ^{:key (:id item)} ;; or as an attribute
+      [:li (:name item)])])
+
+;; UIx
+(defui ui-list [{:keys [items]}]
+  ($ :ul
+    (for [item items]
+      ($ :li {:key (:id item)} ;; only as attribute
+        (:name item)))))
+</code></pre>
+<h2 id="global-shared-state">Global shared state</h2>
+<p>In Reagent it&#39;s common to have shared state in the form of a global var that holds an <code>r/atom</code>. In UIx and React shared state is not global at the namespace level, instead it&#39;s a local state that lives in UI tree and is being shared down the tree via React Context.</p>
+<pre><code class="language-clojure">;; Reagent
+(def state (r/atom 0)) ;; declare shared state
+
+(defn child-component []
+  [:button
+    {:on-click #(swap! state inc)}]) ;; update the shared state
+
+(defn parent-component []
+  (let [value @state] ;; consume the shared state
+    [child-component]))
+
+;; UIx
+;; declare means of sharing value in UI tree
+(def state-context (uix.core/create-context []))
+
+(defui child-component []
+  ;; consume state from the context
+  (let [[n set-n!] (uix/use-context state-context)]
+    ($ :button {:on-click #(set-n! inc)} n)))
+
+(defui parent-component []
+  ;; declare local state to be shared in UI subtree
+  (let [[n set-n!] (uix/use-state 0)]
+    ;; share the state with the subtree via context
+    ($ (.-Provider state-context) {:value [n set-n!]}
+      ($ child-component))))
+</code></pre>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="code-splitting.html">👈 Prev “Code Splitting”</a> <a class="nav-link" href="server-side-rendering.html">Next “Server Side Rendering” 👉</a></footer>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

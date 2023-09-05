@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | Interop With Reagent</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="interop-with-reagent">Interop with Reagent</h1>
+<h2 id="using-reagent-components-in-uix">Using Reagent components in UIx</h2>
+<p>In order to use a Reagent component in UIx you need to wrap Reagent&#39;s Hiccup with <code>r/as-element</code> so that Reagent can take care of Hiccup and convert it into React calls.</p>
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/apprehensive-gentle-eggplant-8fa6554f" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
+
+<h2 id="using-uix-components-in-reagent">Using UIx components in Reagent</h2>
+<p>When using a UIx component in Reagent (or anywhere else) you can continue to use the<code>$</code> macro without changing anything. The macro will make sure that UIx component is properly created no matter which context it is used in.</p>
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/rough-nutty-shoe-b7e6841e" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
+
+<h2 id="syncing-with-ratoms-and-re-frame">Syncing with ratoms and re-frame</h2>
+<p>External data sources can be consumed in hooks-based components via <code>useSyncExternalStoreWithSelector</code> from the <code>&quot;use-sync-external-store&quot;</code> package (in React v18 the function is a part of the public API so there is no need to install the package). This part is only concerned about making the UI components reactive on external data sources. How the state is updated doesn&#39;t change.</p>
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/bumpy-old-stone-12d9037c" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="interop-with-react.html">👈 Prev “Interop With React”</a> <a class="nav-link" href="code-splitting.html">Next “Code Splitting” 👉</a></footer>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

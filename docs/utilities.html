@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | Utilities</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="utilities">Utilities</h1>
+<h2 id="components-source-string">Component&#39;s source string</h2>
+<p>Sometimes you might need to print a component&#39;s source as a string. The most common use case would be when building a design system where it&#39;s useful to display the source alongside live UI. Instead of writing code twice (as UI code and as source string) and keeping it in sync, it is possible to print the UI code directly.</p>
+<p><code>uix.core/source</code> macro does exactly that, it takes a reference to a component and returns its source string at compile-time:</p>
+<pre><code class="language-clojure">(ns app.ui
+  (:require [uix.core :refer [$ defui]]
+            [uix.dom]))
+
+(defui button [props]
+  ($ :button.btn props))
+
+;; renders code block with `button`s source
+(uix.dom/render ($ :pre (uix.core/source button))
+                (js/document.getElementById &quot;root&quot;))
+</code></pre>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="code-linting.html">👈 Prev “Code Linting”</a> <a class="nav-link" href="internals.html">Next “Internals” 👉</a></footer>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

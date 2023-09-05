@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | Code Splitting</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="code-splitting-and-reactlazy">Code-splitting and React.lazy</h1>
+<p>Let&#39;s say you want to split out a library of UI components into a separate bundle, so that it can be shared across multiple applications that depend on the library.</p>
+<pre><code class="language-clojure">(ns app.ui.lib
+  (:require [uix.core :refer [defui $]]))
+
+(defui modal [{:keys [on-close children]}]
+  ...)
+</code></pre>
+<p>Similarly to React, with UIx you can use <code>uix.core/lazy</code> that will take care of loading the UIx component from a separate module. Then in UI code you can use React&#39;s <code>Suspense</code> to load the component lazily and display a fallback UI while it&#39;s loading. The example below demonstrates how to create and load a lazy component using the loader API from <a href="https://github.com/thheller/shadow-cljs">shadow-cljs</a>.</p>
+<pre><code class="language-clojure">(ns app.core
+  (:require [uix.core :refer [defui $]]
+            [shadow.lazy]))
+
+;; create shadow&#39;s loadable object that references `app.ui.lib/modal` component
+(def loadable-modal (shadow.lazy/loadable app.ui.lib/modal))
+
+;; create React&#39;s lazy component that loads the modal using shadow&#39;s API
+(def modal (uix.core/lazy #(shadow.lazy/load loadable-modal)))
+
+(defui app []
+  (let [[show-modal? set-show-modal!] (uix.core/use-state false)]
+    ($ :div
+      ($ :button {:on-click #(set-show-modal! true)})
+      ;; wrap the &quot;lazy&quot; `modal` with React&#39;s `Suspense` component and provide a fallback UI
+      ($ react/Suspense {:fallback ($ :div &quot;Loading...&quot;)}
+        (when show-modal?
+          ;; when rendered, React will load the module while displaying the fallback
+          ;; and then render the component referenced from the module
+          ($ modal {:on-close #(set-show-modal! false)}))))))
+</code></pre>
+<p>For the above to compile correctly you&#39;d have to update build config in <code>shadow-cljs.edn</code>:</p>
+<pre><code class="language-clojure">{:module-loader true
+ :modules {:main {:entries [app.core}}
+           :ui-lib {:entries [app.ui.lib}
+                    :depends-on #{:main}}}
+</code></pre>
+<p>If you are not familiar with ClojureScript&#39;s <code>:modules</code> configuration, make sure to read <a href="https://clojurescript.org/reference/compiler-options#modules">documentation about this compiler option</a>.</p>
+<p>Also check out <a href="https://reactjs.org/docs/code-splitting.html">React&#39;s documentation page on Code-splitting and React.lazy</a> for more examples.</p>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="interop-with-reagent.html">👈 Prev “Interop With Reagent”</a> <a class="nav-link" href="migrating-from-reagent.html">Next “Migrating From Reagent” 👉</a></footer>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

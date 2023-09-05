@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | State</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="theme.css" />
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="state">State</h1>
+<p>UIx is using <a href="https://reactjs.org/docs/hooks-state.html#hooks-and-function-components">React&#39;s state hook</a> for local state.</p>
+<pre><code class="language-clojure">(defui form []
+  (let [[value set-value!] (uix.core/use-state &quot;&quot;)]
+    ($ :input
+      {:value value
+       :on-change #(set-value! (.. % -target -value))})))
+</code></pre>
+<p>In some React wrappers state is represented using the <code>Atom</code> datatype that has has <code>reset!</code> and <code>swap!</code> operations. We take a similar naming approach and suffix state updating function with a bang <code>!</code> denoting that the operation is mutating a value.</p>
+<blockquote>
+<p>Similar to <code>swap!</code>, <code>set-value!</code> from the above example also takes a function that will receive the current value and return the next value of component&#39;s state. Unlike <code>swap!</code>, this state updating function doesn&#39;t take additional arguments that will be passed into a callback.</p>
+</blockquote>
+<p>When the initial value has to be computed before it’s used, it is recommended to pass it in a callback to <code>use-state</code>. The callback will be executed only once, in component’s initialization stage.</p>
+<pre><code class="language-clojure">(defn calculate-initial-value []
+  ;; expensive computation here)
+
+(uix.core/use-state calculate-initial-value)
+</code></pre>
+<h2 id="reusable-state">Reusable state</h2>
+<p>Because state is not directly coupled with components it is possible to build reusable behaviors on top of it. In the example below we create a <code>use-validation</code> function to encapsulate logic that keeps track of a value and applies updates when the value satisfies provided validation function.</p>
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/belligerent-appalling-knife-2630d8e3" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="hooks.html">👈 Prev “Hooks”</a> <a class="nav-link" href="effects.html">Next “Effects” 👉</a></footer>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

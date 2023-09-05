@@ -1,0 +1,12 @@
+{
+  "name": "pitch-uix",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:pitch-io/uix.git",
+  "author": "roman01la <roman01la@romanliutikov.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "marked": "^8.0.0",
+    "marked-gfm-heading-id": "^3.0.7"
+  }
+}
