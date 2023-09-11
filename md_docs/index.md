@@ -16,4 +16,4 @@
 - [Examples](https://github.com/pitch-io/uix/blob/master/core/dev/uix/examples.cljs)
 - [Internals](internals.html)
 
-<iframe src="https://www.clojurescript.studio/ee/some-black-horse-db0221a2" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+<iframe src="https://www.clojurescript.studio/ee/some-black-horse-db0221a2?p=60_40" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>

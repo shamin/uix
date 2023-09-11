@@ -31,7 +31,7 @@ iframe {
 pre {
   border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 1px 4px rgb(42 187 227 / 30%);
+  border: 1px solid #0000002b;
 }
 p code {
   color: #282c34;
