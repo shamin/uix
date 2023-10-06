@@ -40,7 +40,7 @@
 </code></pre>
 <p>Similarly to React, with UIx you can use <code>uix.core/lazy</code> that will take care of loading the UIx component from a separate module. Then in UI code you can use React&#39;s <code>Suspense</code> to load the component lazily and display a fallback UI while it&#39;s loading. The example below demonstrates how to create and load a lazy component using the loader API from <a href="https://github.com/thheller/shadow-cljs">shadow-cljs</a>.</p>
 <pre><code class="language-clojure">(ns app.core
-  (:require [uix.core :refer [defui $]]
+  (:require [uix.core :as uix :refer [defui $]]
             [shadow.lazy]))
 
 ;; create shadow&#39;s loadable object that references `app.ui.lib/modal` component
@@ -54,7 +54,7 @@
     ($ :div
       ($ :button {:on-click #(set-show-modal! true)})
       ;; wrap the &quot;lazy&quot; `modal` with React&#39;s `Suspense` component and provide a fallback UI
-      ($ react/Suspense {:fallback ($ :div &quot;Loading...&quot;)}
+      ($ uix/suspense {:fallback ($ :div &quot;Loading...&quot;)}
         (when show-modal?
           ;; when rendered, React will load the module while displaying the fallback
           ;; and then render the component referenced from the module

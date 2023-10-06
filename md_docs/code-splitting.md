@@ -14,7 +14,7 @@ Similarly to React, with UIx you can use `uix.core/lazy` that will take care of 
 
 ```clojure
 (ns app.core
-  (:require [uix.core :refer [defui $]]
+  (:require [uix.core :as uix :refer [defui $]]
             [shadow.lazy]))
 
 ;; create shadow's loadable object that references `app.ui.lib/modal` component
@@ -28,7 +28,7 @@ Similarly to React, with UIx you can use `uix.core/lazy` that will take care of 
     ($ :div
       ($ :button {:on-click #(set-show-modal! true)})
       ;; wrap the "lazy" `modal` with React's `Suspense` component and provide a fallback UI
-      ($ react/Suspense {:fallback ($ :div "Loading...")}
+      ($ uix/suspense {:fallback ($ :div "Loading...")}
         (when show-modal?
           ;; when rendered, React will load the module while displaying the fallback
           ;; and then render the component referenced from the module
