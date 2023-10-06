@@ -26,7 +26,24 @@
         </div>
       </div>
     </header>
-    <main class="home"><ul>
+    <main class="home">
+      <pre><code></code>(ns playground.core
+  (:require [uix.core :as uix :refer [defui $]]
+            [uix.dom]))
+
+(defui app []
+  (let [[n set-n] (uix/use-state 0)]
+    ($ :.flex.flex-col.justify-center.items-center.h-screen
+      ($ :img.animate-bounce
+        {:src "https://raw.githubusercontent.com/pitch-io/uix/master/logo.png"
+          :width 128})
+      ($ :div.text-xl.mb-4 "Hello")
+      ($ :div.text-4xl.animate-ping
+        "👋"))))
+
+(defonce root (uix.dom/create-root (js/document.getElementById "root")))
+(uix.dom/render-root ($ app) root)</code></pre>
+      <ul>
 <li><a href="what-is-uix.html">What is UIx?</a></li>
 <li><a href="components.html">Components</a></li>
 <li><a href="elements.html">Elements</a></li>
@@ -48,6 +65,7 @@
 <li><a href="react-three-fiber.html">React Three Fiber</a></li>
 </ul>
 <iframe src="https://www.clojurescript.studio/ee/some-black-horse-db0221a2?p=60_40" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
-</main>
+
+    </main>
   </body>
 </html>

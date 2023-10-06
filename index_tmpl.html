@@ -26,6 +26,24 @@
         </div>
       </div>
     </header>
-    <main class="home">{{content}}</main>
+    <main class="home">
+      <pre><code></code>(ns playground.core
+  (:require [uix.core :as uix :refer [defui $]]
+            [uix.dom]))
+
+(defui app []
+  (let [[n set-n] (uix/use-state 0)]
+    ($ :.flex.flex-col.justify-center.items-center.h-screen
+      ($ :img.animate-bounce
+        {:src "https://raw.githubusercontent.com/pitch-io/uix/master/logo.png"
+          :width 128})
+      ($ :div.text-xl.mb-4 "Hello")
+      ($ :div.text-4xl.animate-ping
+        "👋"))))
+
+(defonce root (uix.dom/create-root (js/document.getElementById "root")))
+(uix.dom/render-root ($ app) root)</code></pre>
+      {{content}}
+    </main>
   </body>
 </html>
