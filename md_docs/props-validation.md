@@ -66,7 +66,7 @@ should contain key: :on-click
 Detected 1 error
 ```
 
-> Most likely you don't want those runtime checks in production. Make sure `:elide-asserts` compiler option is set to `false`, unless if you are using `shadow-cljs`, where the option is set to `false` for `release` builds by default.
+> Most likely you don't want those runtime checks in production. Make sure `:elide-asserts` compiler option is set to `true`, unless if you are using `shadow-cljs`, where the option is set to `true` for `release` builds by default.
 
 To validate React `children` you can use the following spec.
 
