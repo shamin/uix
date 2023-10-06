@@ -4,6 +4,7 @@
 - [Hooks](hooks.html)
 - [State](state.html)
 - [Effects](effects.html)
+- [Props validation](props-validation.html)
 - [Interop with React](interop-with-react.html)
 - [Interop with Reagent](interop-with-reagent.html)
 - [Code-splitting and React.lazy](code-splitting.html)

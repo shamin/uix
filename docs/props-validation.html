@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | Props Validation</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css"
+    />
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/docs"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+          <a href="https://github.com/sponsors/roman01la">Support</a>
+          <div class="version">v1.0.0</div>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="props-validation">Props validation</h1>
+<p>While in React it&#39;s common to use <a href="https://legacy.reactjs.org/docs/typechecking-with-proptypes.html"><code>PropTypes</code></a> for runtime validation or <a href="https://www.typescriptlang.org/docs/handbook/jsx.html#function-component">TypeScript</a> for static type checking, in Clojure we can leverage <code>:pre</code> conditions to assert component&#39;s props at runtime.</p>
+<p>Here&#39;s a typical example using <code>defn</code>.</p>
+<pre><code class="language-clojure">(defn user-&gt;full-name
+  [{:keys [fname lname]}]
+  {:pre [(string? fname) (string? lname)]}
+  (str fname &quot; &quot; lname))
+
+(user-&gt;full-name {:lname &quot;Doe&quot;})
+
+;; Execution error (AssertionError) at user/user-&gt;full-name (form-init2978563934614804694.clj:1).
+;; Assert failed: (string? fname)
+</code></pre>
+<p>In UIx, the syntax of the <code>defui</code> macro inherits most properties of <code>defn</code>, including pre conditions.</p>
+<pre><code class="language-clojure">(defui button
+  [{:keys [children on-click]}]
+  {:pre [(fn? on-click)]}
+  ($ :button {:on-click on-click}
+    children))
+</code></pre>
+<p>To improve things further and leverage <code>clojure.spec</code> for rich data validation and helpful error messages, it&#39;s recommended to use <a href="https://github.com/adamrenklint/preo">adamrenklint/preo</a> library.</p>
+<pre><code class="language-clojure">(ns app.ui
+  (:require [clojure.spec.alpha :as s]
+            [preo.core :as p]))
+
+(s/def :prop/on-click fn?)
+(s/def ::button (s/keys :req-un [:prop/on-click]))
+
+(defui button
+  [{:keys [children on-click] :as props}]
+  {:pre [(p/arg! ::button props)]}
+  ($ :button {:on-click on-click}
+    children))
+
+;; trigger spec error
+($ button {})
+
+
+Invalid argument: props
+-- Spec failed --------------------
+
+  {}
+
+should contain key: :on-click
+
+| key       | spec |
+|===========+======|
+| :on-click | fn?  |
+
+-- Relevant specs -------
+
+:app.ui/button:
+  (clojure.spec.alpha/keys :req-un [:prop/on-click])
+
+-------------------------
+Detected 1 error
+</code></pre>
+<p>To validate React <code>children</code> you can use the following spec.</p>
+<pre><code class="language-clojure">(s/def :react/element
+  (s/or
+    :string string?
+    :number number?
+    :nil nil?
+    :element react/isValidElement ;; for actual React elements
+    :elements :react/elements)) ;; for nested collection of elements
+
+;; a collection of child elements
+;; can be either JS array of Clojure&#39;s sequential collection
+(s/def :react/elements
+  (s/coll-of :react/element :kind #(or (array? %) (sequential? %))))
+
+;; `children` can be either a single element
+;; or a collection of elements
+(s/def :react/children
+  (s/or :element :react/element
+        :elements :react/elements))
+</code></pre>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="effects.html">👈 Prev “Effects”</a> <a class="nav-link" href="interop-with-react.html">Next “Interop With React” 👉</a></footer>
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

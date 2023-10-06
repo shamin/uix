@@ -22,6 +22,7 @@ allFiles = [
   "hooks.md",
   "state.md",
   "effects.md",
+  "props-validation.md",
   "interop-with-react.md",
   "interop-with-reagent.md",
   "code-splitting.md",
