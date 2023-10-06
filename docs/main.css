@@ -74,9 +74,14 @@ blockquote {
   justify-content: space-between;
   align-items: center;
 }
+.version {
+  font-size: 14px;
+  font-weight: 500;
+}
 .nav {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
   gap: 16px;
 }
 .nav a {

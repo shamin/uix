@@ -7,6 +7,12 @@ marked.use(gfmHeadingId({}));
 const tmpl = fs.readFileSync("./tmpl.html", "utf8");
 const indexTmpl = fs.readFileSync("./index_tmpl.html", "utf8");
 
+const version = await fetch("https://clojars.org/com.pitch/uix.core")
+  .then((r) => r.text())
+  .then((s) => {
+    return `v${s.match(/(\d+\.\d+\.\d+)&quot;]/)[1]}`;
+  });
+
 let allFiles = fs.readdirSync("./md_docs/");
 
 allFiles = [
@@ -42,7 +48,7 @@ function capitalize(file) {
 
 allFiles.forEach((file, idx) => {
   let out = marked.parse(fs.readFileSync(`./md_docs/${file}`, "utf8"));
-  out = tmpl.replace("{{content}}", out);
+  out = tmpl.replace("{{content}}", out).replace("{{version}}", version);
   if (idx > 0) {
     out = out.replace(
       "{{prev}}",
@@ -70,5 +76,5 @@ allFiles.forEach((file, idx) => {
 });
 
 let out = marked.parse(fs.readFileSync(`./md_docs/index.md`, "utf8"));
-out = indexTmpl.replace("{{content}}", out);
+out = indexTmpl.replace("{{content}}", out).replace("{{version}}", version);
 fs.writeFileSync(`./docs/index.html`, out);
