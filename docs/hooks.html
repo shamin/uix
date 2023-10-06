@@ -138,19 +138,15 @@
 
 <h2 id="creating-custom-hooks">Creating custom hooks</h2>
 <p>While custom hooks can be defined as normal functions via <code>defn</code>, it&#39;s recommended to use <code>uix.core/defhook</code> macro when creating custom hooks.</p>
-<pre><code class="language-clojure">(defhook use-event-listener [target type handler]
-  (uix/use-effect
-    (fn []
-      (.addEventListener target type handler)
-      #(.removeEventListener target type handler))
-    [target type handler]))
-</code></pre>
 <p>Here are some benefits of using <code>defhook</code>:</p>
 <ol>
 <li>Enforced naming convention: hooks names must start with <code>use-</code>. The macro performs compile time check.</li>
 <li>Enables hooks linting: the macro runs <a href="/code-linting.html">built-in linter</a> on the body of a custom hook, making sure that hooks are used correctly.</li>
 <li>(Future improvement) Optional linter rule to make sure that all hooks in application code are created via <code>defhook</code>.</li>
 </ol>
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/young-salty-nurse-95b6db77" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
 </main>
     <footer class="page-footer"><a class="nav-link" href="elements.html">👈 Prev “Elements”</a> <a class="nav-link" href="state.html">Next “State” 👉</a></footer>
     <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>

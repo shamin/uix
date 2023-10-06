@@ -150,17 +150,12 @@ Note that unlike `r/atom` in Reagent, a ref in UIx and React is not a state prim
 
 While custom hooks can be defined as normal functions via `defn`, it's recommended to use `uix.core/defhook` macro when creating custom hooks.
 
-```clojure
-(defhook use-event-listener [target type handler]
-  (uix/use-effect
-    (fn []
-      (.addEventListener target type handler)
-      #(.removeEventListener target type handler))
-    [target type handler]))
-```
-
 Here are some benefits of using `defhook`:
 
 1. Enforced naming convention: hooks names must start with `use-`. The macro performs compile time check.
 2. Enables hooks linting: the macro runs [built-in linter](/code-linting.html) on the body of a custom hook, making sure that hooks are used correctly.
 3. (Future improvement) Optional linter rule to make sure that all hooks in application code are created via `defhook`.
+
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/young-salty-nurse-95b6db77" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
