@@ -87,6 +87,9 @@ should contain key: :on-click
 -------------------------
 Detected 1 error
 </code></pre>
+<blockquote>
+<p>Most likely you don&#39;t want those runtime checks in production. Make sure <code>:elide-asserts</code> compiler option is set to <code>false</code>, unless if you are using <code>shadow-cljs</code>, where the option is set to <code>false</code> for <code>release</code> builds by default.</p>
+</blockquote>
 <p>To validate React <code>children</code> you can use the following spec.</p>
 <pre><code class="language-clojure">(s/def :react/element
   (s/or
