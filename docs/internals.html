@@ -42,10 +42,10 @@
 <ol>
 <li>Handles props passing, to make sure that Clojure&#39;s data structures can be used as component props, otherwise React will destroy them when validating props object</li>
 <li>Emits React component when compiling as ClojureScript and a plain function when running on JVM</li>
-<li>Injects <code>react-refresh</code> setup for <a href="/docs/hot-reloading.md">hot-reloading</a> in dev</li>
+<li>Injects <code>react-refresh</code> setup for <a href="/hot-reloading.html">hot-reloading</a> in dev</li>
 <li>Assigns readable component name to improve debugging (those names are printed in stack traces and in React DevTools)</li>
 <li>Makes sure that a component is a single-arity function that takes a map of props</li>
-<li>Runs a <a href="/docs/code-linting.md">linter</a> on component&#39;s body</li>
+<li>Runs a <a href="/code-linting.html">linter</a> on component&#39;s body</li>
 </ol>
 <p><code>uix.core/fn</code> macro is similar to <code>defui</code>, but should be used to create anonoymous components, which is useful for <a href="https://reactjs.org/docs/render-props.html">render props technique</a>.</p>
 <h3 id="-macro"><code>$</code> macro</h3>
@@ -66,11 +66,11 @@
 <li>Handles React&#39;s requirement to return either a function or <code>js/undefined</code> from a hook in a way that <code>nil</code> becomes acceptable return value as well</li>
 </ol>
 <h3 id="linter">Linter</h3>
-<p><code>uix.linter</code> implements a built-in linter that takes care of validating components and hooks. The linter is extensible via <a href="/docs/code-linting.md#custom-linters">public API</a>.</p>
+<p><code>uix.linter</code> implements a built-in linter that takes care of validating components and hooks. The linter is extensible via <a href="/code-linting.html#custom-linters">public API</a>.</p>
 <p>The linter leverages ClojureScript&#39;s analyazer to retrieve information about code structure at compile-time. This data provides info about local and global vars, usages of vars, and of course the data structure representing the code being analyzed.</p>
 <p>When analyzing the linter collects and reports errors into ClojureScript&#39;s analyzer, that then takes care of printing those errors in terminal, failing a build and propagating them into shadow-cljs&#39;s on screen error display.</p>
 </main>
-    <footer class="page-footer"><a class="nav-link" href="utilities.html">👈 Prev “Utilities”</a> <div></div></footer>
+    <footer class="page-footer"><a class="nav-link" href="utilities.html">👈 Prev “Utilities”</a> <a class="nav-link" href="react-native.html">Next “React Native” 👉</a></footer>
     <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
     <script>

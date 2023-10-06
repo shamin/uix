@@ -18,7 +18,7 @@ When using a UIx component in Reagent (or anywhere else) you can continue to use
 
 ## Syncing with ratoms and re-frame
 
-External data sources can be consumed in hooks-based components via `useSyncExternalStoreWithSelector` from the `"use-sync-external-store"` package (in React v18 the function is a part of the public API so there is no need to install the package). This part is only concerned about making the UI components reactive on external data sources. How the state is updated doesn't change.
+External data sources can be consumed in hooks-based components via `useSyncExternalStoreWithSelector` from the `"use-sync-external-store"` package. This part is only concerned about making the UI components reactive on external data sources. How the state is updated doesn't change.
 
 <div class="sandbox">
 <iframe src="https://www.clojurescript.studio/ee/bumpy-old-stone-12d9037c" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>

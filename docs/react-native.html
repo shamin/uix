@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | React Native</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css"
+    />
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/docs"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://github.com/pitch-io/uix">UIx</a>
+          <a href="https://www.clojurescript.studio/">Sandbox</a>
+        </div>
+      </div>
+    </header>
+    <main><h1 id="using-react-native-with-uix">Using React Native with UIx</h1>
+<p>Follow the steps below or just run <code>npx create-uix-app@latest {{app-name}} --react-native</code> in existing React Native project.</p>
+<ol>
+<li>Create RN project</li>
+</ol>
+<pre><code class="language-sh">npx react-native init MyApp
+cd MyApp
+echo &#39;import &quot;./app/index.js&quot;;&#39; &gt; index.js
+</code></pre>
+<ol start="2">
+<li>Add Clojure deps</li>
+</ol>
+<pre><code class="language-clojure">;; deps.edn
+{:deps {org.clojure/clojure {:mvn/version &quot;1.11.1&quot;}
+        org.clojure/clojurescript {:mvn/version &quot;1.11.60&quot;}
+        com.pitch/uix.core {:mvn/version &quot;1.0.0&quot;}
+        thheller/shadow-cljs {:mvn/version &quot;2.25.8&quot;}}
+ :paths [&quot;src&quot; &quot;dev&quot;]}
+</code></pre>
+<ol start="3">
+<li>Add build config</li>
+</ol>
+<pre><code class="language-clojure">;; shadow-cljs.edn
+{:deps true
+ :builds {:app
+          {:target :react-native
+           :init-fn app.core/start
+           :output-dir &quot;app&quot;
+           :compiler-options {:source-map-path &quot;app/&quot;
+                              :source-map-include-sources-content true
+                              :warnings-as-errors true}
+           :devtools {:preloads [app.preload]
+                      :build-notify app.preload/build-notify}}}}
+</code></pre>
+<ol start="4">
+<li>Setup dev tooling</li>
+</ol>
+<pre><code class="language-clojure">;; dev/app/preload.cljs
+(ns app.preload
+    (:require [uix.dev]
+              [clojure.string :as str]))
+
+;; Initializes fast-refresh runtime.
+(defonce __init-fast-refresh!
+  (do (uix.dev/init-fast-refresh!)
+      nil))
+
+;; Called by shadow-cljs after every reload.
+(defn ^:dev/after-load refresh []
+  (uix.dev/refresh!))
+
+;; Forwards cljs build errors to React Native&#39;s error view
+(defn build-notify [{:keys [type report]}]
+  (when (= :build-failure type)
+    (js/console.error (js/Error. report))))
+</code></pre>
+<p>An example of forwarded cljs compiler error</p>
+<img src="errors_forwarding.jpg" width="200" />
+
+<ol start="5">
+<li>Add some UI code</li>
+</ol>
+<pre><code class="language-clojure">;; src/app/core.cljs
+(ns app.core
+  (:require [react-native :as rn]
+            [uix.core :refer [$ defui]]))
+
+(defui root []
+  ($ rn/View {:style {:flex 1
+                      :align-items :center
+                      :justify-content :center}}
+    ($ rn/Text {:style {:font-size 32
+                        :font-weight &quot;500&quot;
+                        :text-align :center}}
+      &quot;Hello! 👋&quot;)))
+
+(defn start []
+  (.registerComponent rn/AppRegistry &quot;MyApp&quot; (constantly root)))
+</code></pre>
+<ol start="6">
+<li>Run the project</li>
+</ol>
+<pre><code class="language-sh"># start cljs build
+clojure -M -m shadow.cljs.devtools.cli watch app
+
+# start RN&#39;s Metro bundler
+yarn start
+
+# start ios (or android) simulator, or connect a real device
+yarn ios
+</code></pre>
+<ol start="7">
+<li>Disable RN&#39;s own Fast Refresh integration</li>
+</ol>
+<p>Bring up the developer menu in the simulator (Cmd+D) and disable Fast Refresh.</p>
+<img src="disable_fast_refresh.jpg" width="200" />
+
+<h2 id="rn-elements-as-keywords">RN elements as keywords</h2>
+<p>If you prefer keyword elements in RN, you can wrap <code>$</code> macro to resolve
+keywords to RN components:</p>
+<pre><code class="language-clojure">;; src/app/uix.cljc
+(ns app.uix
+  #?(:cljs (:require-macros [app.uix]))
+  (:require [uix.core]
+            [uix.compiler.attributes :as attrs]
+            #?(:cljs [react-native])))
+
+(defn dash-&gt;camel [k]
+  (let [name #?(:cljs (attrs/dash-to-camel (name k))
+                :clj (name (attrs/camel-case-dom k)))]
+    (str (.toUpperCase ^String (subs name 0 1)) (subs name 1))))
+
+#?(:cljs
+   (defn rn-component [cname]
+     (aget react-native cname)))
+
+#?(:clj
+   (defmacro $ [tag &amp; args]
+     (if (and (keyword? tag) (not= :&lt;&gt; tag))
+       (let [cname (dash-&gt;camel tag)]
+         `(uix.core/$ (rn-component ~cname) ~@args))
+       `(uix.core/$ ~tag ~@args))))
+</code></pre>
+<p>Now you can write UI like this:</p>
+<pre><code class="language-clojure">(ns app.core
+    (:require [uix.core :refer [defui]]
+              [app.uix :refer [$]]))
+
+(defui root []
+  ($ :view {:style {:flex 1
+                    :align-items :center
+                    :justify-content :center}}
+    ($ :text {:style {:font-size 32
+                      :font-weight &quot;500&quot;
+                      :text-align :center}}
+      &quot;Hello! 👋&quot;)))
+</code></pre>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="internals.html">👈 Prev “Internals”</a> <a class="nav-link" href="react-three-fiber.html">Next “React Three Fiber” 👉</a></footer>
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

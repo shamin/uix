@@ -1,6 +1,9 @@
 # Hooks linter
 
-UIx has a built-in linter that will help you to use React Hooks correctly. The linter is built into `defui` and the default `uix.core/*` hooks, and implements a set of rules from React's official [ESLint plugin](https://reactjs.org/docs/hooks-rules.html).
+UIx has a built-in linter that will help you to use React Hooks correctly.
+The linter is built into `defui`, `defhook` and the default `uix.core/*` hooks,
+and
+implements a set of rules from React's official [ESLint plugin](https://reactjs.org/docs/hooks-rules.html).
 
 While in the original ESLint plugin there are rules that can be considered as suggestions and thus reported as warnings, most of the rules implemented in UIx should always be followed as breaking them will lead to bugs in your UI. For this reason in UIx a broken rule will fail to build so that it's impossible to build a project with problematic behaviour in UI components.
 
@@ -176,7 +179,7 @@ UIx's linter can be provided with an external configuration that should live in 
 
 When migrating from Reagent + re-frame to UIx you might want to keep using re-frame or at least stick with it for some time because migrating data management is not as simple as rewriting UI components.
 
-To make sure this transition path is smooth UIx will check for re-frame `subscribe` calls in UIx components and trigger a compilation error that will suggest the use of a `use-subscribe` hook instead. It will also point to the [“Syncing with ratoms and re-frame”](https://github.com/pitch-io/uix/blob/master/docs/interop-with-reagent.md#syncing-with-ratoms-and-re-frame) section in UIx docs.
+To make sure this transition path is smooth UIx will check for re-frame `subscribe` calls in UIx components and trigger a compilation error that will suggest the use of a `use-subscribe` hook instead. It will also point to the [“Syncing with ratoms and re-frame”](/interop-with-reagent.html#syncing-with-ratoms-and-re-frame) section in UIx docs.
 
 Given this piece of code
 
@@ -205,17 +208,21 @@ It is possible to add re-frame specific rules to the linter config file (located
 ```
 
 # Custom linters
+
 UIx exposes a public API to register custom linters, so that you can have your own linting rules specific to your project. There are three types of linters in UIx:
+
 - Component linters `uix.linter/lint-component` — those execute on entire `defui` form
 - Element linters `uix.linter/lint-element` — execute per `$` form
 - Hook linters `uix.linter/lint-hook-with-deps` — execute for every Hook form that takes deps (`use-effect`, `use-callback`, etc.)
 
-See [core/dev/uix/linters.clj](/core/dev/uix/linters.clj) for a set of complete examples.
+See [core/dev/uix/linters.clj](https://github.com/pitch-io/uix/blob/master/core/dev/uix/linters.clj) for a set of complete examples.
 
 # clj-kondo
 
 UIx has importable configuration for clj-kondo. You can important the configuration with:
+
 ```bash
 clj-kondo --lint "$(clojure -Spath)" --copy-configs --skip-lint
 ```
-There is only one custom hook, which validates the arguments passed to `uix.core/$`. 
+
+There is only one custom hook, which validates the arguments passed to `uix.core/$`.

@@ -30,7 +30,7 @@
     </header>
     <main><h1 id="interop-with-react">Interop with React</h1>
 <h2 id="using-react-components-in-uix">Using React components in UIx</h2>
-<p>In the <a href="/docs/elements.md">“Elements”</a> section it was briefly mentioned that React components written in JavaScript can be used in the <code>$</code> macro, but with a difference in how props are passed into such a component.</p>
+<p>In the <a href="/elements.html">“Elements”</a> section it was briefly mentioned that React components written in JavaScript can be used in the <code>$</code> macro, but with a difference in how props are passed into such a component.</p>
 <p>As an example, let&#39;s say we have <code>Button</code> component that we want to use in a UIx component.</p>
 <pre><code class="language-js">function Button({ onClick, title, style, className, children }) {
   return (
@@ -41,11 +41,10 @@
 }
 </code></pre>
 <p>Here’s how to use it in UIx:</p>
-<pre><code class="language-clojure">($ Button
-  {:on-click #(js/console.log :click)
-   :title &quot;this is a button&quot;
-   :style {:border &quot;1px solid red&quot;}
-   :class :button}
+<pre><code class="language-clojure">($ Button {:on-click #(js/console.log :click)
+           :title &quot;this is a button&quot;
+           :style {:border &quot;1px solid red&quot;}
+           :class :button}
   &quot;press me&quot;)
 </code></pre>
 <p>When a non-UIx component is passed into <code>$</code>, the props map is converted into JS object using the following set of rules:</p>
@@ -88,7 +87,10 @@
 <pre><code class="language-js">&lt;Button onClick={console.log}&gt;press me&lt;/Button&gt;
 </code></pre>
 <h3 id="on-ref-forwarding">On <code>ref</code> forwarding</h3>
-<p>Some third party React components can inject a <code>ref</code> into a child element, which requires doing <a href="https://react.dev/reference/react/forwardRef">ref forwarding</a>. It&#39;s not needed when passing refs between UIx, but is still required for a case when non-UIx component injects a ref into UIx element.</p>
+<p>Some third party React components can inject a <code>ref</code> into a child element,
+which requires doing <a href="https://react.dev/reference/react/forwardRef">ref forwarding</a>. It&#39;s not needed when passing refs between
+UIx elements, but is still required for a case when non-UIx component injects a
+ref into UIx element.</p>
 <p>For this specific case there&#39;s <code>uix.core/forward-ref</code>, which should be used exclusively in such cases. The helper takes care of merging and converting props.</p>
 <blockquote>
 <p>Note that <code>forward-ref</code> also doesn’t transform camel case keys into kebab case.</p>

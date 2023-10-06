@@ -22,10 +22,10 @@ This one is a lot more involved. While the core package wraps a public API from 
 
 1. Handles props passing, to make sure that Clojure's data structures can be used as component props, otherwise React will destroy them when validating props object
 2. Emits React component when compiling as ClojureScript and a plain function when running on JVM
-3. Injects `react-refresh` setup for [hot-reloading](/docs/hot-reloading.md) in dev
+3. Injects `react-refresh` setup for [hot-reloading](/hot-reloading.html) in dev
 4. Assigns readable component name to improve debugging (those names are printed in stack traces and in React DevTools)
 5. Makes sure that a component is a single-arity function that takes a map of props
-6. Runs a [linter](/docs/code-linting.md) on component's body
+6. Runs a [linter](/code-linting.html) on component's body
 
 `uix.core/fn` macro is similar to `defui`, but should be used to create anonoymous components, which is useful for [render props technique](https://reactjs.org/docs/render-props.html).
 
@@ -54,7 +54,7 @@ UIx wraps all React's default hooks and adds an extra layer to hide differences 
 
 ### Linter
 
-`uix.linter` implements a built-in linter that takes care of validating components and hooks. The linter is extensible via [public API](/docs/code-linting.md#custom-linters).
+`uix.linter` implements a built-in linter that takes care of validating components and hooks. The linter is extensible via [public API](/code-linting.html#custom-linters).
 
 The linter leverages ClojureScript's analyazer to retrieve information about code structure at compile-time. This data provides info about local and global vars, usages of vars, and of course the data structure representing the code being analyzed.
 

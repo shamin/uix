@@ -37,7 +37,7 @@ When the same dependency has a different value between component updates, the ho
 
 This works as expected for primitive values that map to identical constructs in JS like numbers and strings, but what about Clojure's maps and vectors that can be compared by value?
 
-> TL;DR: As a rule of thumb, you should prefer to use only primitives as dependencies inside of a hook.
+TL;DR: As a rule of thumb, you should prefer to use only primitives as dependencies inside of a hook.
 
 In React, comparison is done by identity, not value, and in JS, while two primitives with the same value have the same identity, two objects with the same value do not. Since a Clojure map is compiled into a JS object, even if two maps has the same value, they will never have the same identity, meaning that React will always see them as different. In other words, comparison in React is done using JS's `===` or `Object.is`, not Clojure's `=`.
 
@@ -114,11 +114,11 @@ In other words, React will never complain about the return value in UIx's effect
     (map inc [1 2 3])) ;; return value is a collection, nothing wrong here either
   [])
 
-  (uix/use-effect
-    (fn []
-      (map inc)) ;; return value is a function (transducer),
-    [])          ;; it's gonna be executed as a cleanup function,
-                 ;; is that intended?
+(uix/use-effect
+  (fn []
+    (map inc)) ;; return value is a function (transducer),
+  [])          ;; it's gonna be executed as a cleanup function,
+             ;; is that intended?
 ```
 
 ## Differences from `use-callback` and `use-memo` hooks
@@ -133,6 +133,34 @@ While in pure React `useRef` returns an object with a `current` property, in UIx
 
 Note that unlike `r/atom` in Reagent, a ref in UIx and React is not a state primitive, it's a mutable value and doesn't trigger an update.
 
+```clojure
+(defui component []
+  (let [ref (uix/use-ref)]
+    (uix/use-layout-effect
+      (fn []
+        (js/console.log (.-clientWidth @ref))))
+    ($ :div {:ref ref})))
+```
+
 <div class="sandbox">
 <iframe src="https://www.clojurescript.studio/ee/helpful-small-thailand-254d0308?console=1" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 </div>
+
+## Creating custom hooks
+
+While custom hooks can be defined as normal functions via `defn`, it's recommended to use `uix.core/defhook` macro when creating custom hooks.
+
+```clojure
+(defhook use-event-listener [target type handler]
+  (uix/use-effect
+    (fn []
+      (.addEventListener target type handler)
+      #(.removeEventListener target type handler))
+    [target type handler]))
+```
+
+Here are some benefits of using `defhook`:
+
+1. Enforced naming convention: hooks names must start with `use-`. The macro performs compile time check.
+2. Enables hooks linting: the macro runs [built-in linter](/code-linting.html) on the body of a custom hook, making sure that hooks are used correctly.
+3. (Future improvement) Optional linter rule to make sure that all hooks in application code are created via `defhook`.

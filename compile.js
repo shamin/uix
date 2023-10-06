@@ -26,6 +26,8 @@ allFiles = [
   "code-linting.md",
   "utilities.md",
   "internals.md",
+  "react-native.md",
+  "react-three-fiber.md",
 ];
 
 const mdFiles = [];

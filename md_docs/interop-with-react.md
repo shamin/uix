@@ -2,7 +2,7 @@
 
 ## Using React components in UIx
 
-In the [“Elements”](/docs/elements.md) section it was briefly mentioned that React components written in JavaScript can be used in the `$` macro, but with a difference in how props are passed into such a component.
+In the [“Elements”](/elements.html) section it was briefly mentioned that React components written in JavaScript can be used in the `$` macro, but with a difference in how props are passed into such a component.
 
 As an example, let's say we have `Button` component that we want to use in a UIx component.
 
@@ -19,11 +19,10 @@ function Button({ onClick, title, style, className, children }) {
 Here’s how to use it in UIx:
 
 ```clojure
-($ Button
-  {:on-click #(js/console.log :click)
-   :title "this is a button"
-   :style {:border "1px solid red"}
-   :class :button}
+($ Button {:on-click #(js/console.log :click)
+           :title "this is a button"
+           :style {:border "1px solid red"}
+           :class :button}
   "press me")
 ```
 
@@ -67,7 +66,10 @@ Now `Button` can used as a normal React component.
 
 ### On `ref` forwarding
 
-Some third party React components can inject a `ref` into a child element, which requires doing [ref forwarding](https://react.dev/reference/react/forwardRef). It's not needed when passing refs between UIx, but is still required for a case when non-UIx component injects a ref into UIx element.
+Some third party React components can inject a `ref` into a child element,
+which requires doing [ref forwarding](https://react.dev/reference/react/forwardRef). It's not needed when passing refs between
+UIx elements, but is still required for a case when non-UIx component injects a
+ref into UIx element.
 
 For this specific case there's `uix.core/forward-ref`, which should be used exclusively in such cases. The helper takes care of merging and converting props.
 

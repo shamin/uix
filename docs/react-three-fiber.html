@@ -7,7 +7,7 @@
       rel="shortcut icon"
       href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
     />
-    <title>UIx | React Devtools</title>
+    <title>UIx | React Three Fiber</title>
     <link rel="preconnect" href="https://rsms.me/" />
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     <link rel="stylesheet" href="main.css" />
@@ -28,16 +28,15 @@
         </div>
       </div>
     </header>
-    <main><h1 id="react-devtools">React DevTools</h1>
-<p><a href="https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en">React DevTools</a> is a browser extension that can be used to inspect live UI tree, component props and profile performance in DevTools.</p>
-<h2 id="uix-specifics">UIx specifics</h2>
-<ul>
-<li>Jump to component definition button [2] works as expected, unlike in Reagent</li>
-<li>Component&#39;s props preview [3] displays JS implementation of props map instead of using Custom Formatters. The workaround for this is to use debug button [1] that will print component&#39;s data to browser console where a custom formatter (<a href="/installation.html#enable-custom-formatters-in-chrome">here&#39;s how to install and enable custom formatters in Chrome</a>) will print props map correctly [4]</li>
-</ul>
-<p><img src="rdt_1.jpg" alt=""></p>
+    <main><h1 id="using-react-three-fiber-with-uix">Using React Three Fiber with UIx</h1>
+<p>Since React Three Fiber is a library that implements a custom React renderer
+targeting WebGL on the web, it&#39;s really easy to set up. Just <code>@react-three/fiber</code> to your NPM
+dependencies and render r3f components!</p>
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/default-three-fiber" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
 </main>
-    <footer class="page-footer"><a class="nav-link" href="hot-reloading.html">👈 Prev “Hot Reloading”</a> <a class="nav-link" href="code-linting.html">Next “Code Linting” 👉</a></footer>
+    <footer class="page-footer"><a class="nav-link" href="react-native.html">👈 Prev “React Native”</a> <div></div></footer>
     <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
     <script>
