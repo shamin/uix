@@ -110,6 +110,10 @@ p img {
   gap: 64px;
   padding: 64px 0 0;
 }
+.home ul li {
+  text-wrap: nowrap;
+  margin: 4px 0;
+}
 .home pre {
   display: none;
 }
