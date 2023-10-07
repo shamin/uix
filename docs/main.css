@@ -85,14 +85,19 @@ blockquote {
   gap: 16px;
 }
 .nav a {
+  height: 32px;
+  box-sizing: border-box;
+  padding: 6px 6px;
+}
+.nav a:not(.icon) {
   text-decoration: none;
   background: #5fb7ea;
   color: #ebf8fa;
-  padding: 6px 12px;
   border-radius: 99px;
   font-size: 14px;
   font-weight: 600;
   box-shadow: 0 1px 4px rgb(42 187 227 / 30%);
+  padding: 6px 12px;
 }
 .title {
   font-size: 14px;
