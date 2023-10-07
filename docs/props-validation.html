@@ -38,16 +38,10 @@
               </a>
             </h1><p>While in React it&#39;s common to use <a href="https://legacy.reactjs.org/docs/typechecking-with-proptypes.html"><code>PropTypes</code></a> for runtime validation or <a href="https://www.typescriptlang.org/docs/handbook/jsx.html#function-component">TypeScript</a> for static type checking, in Clojure we can leverage <code>:pre</code> conditions to assert component&#39;s props at runtime.</p>
 <p>Here&#39;s a typical example using <code>defn</code>.</p>
-<pre><code class="language-clojure">(defn user-&gt;full-name
-  [{:keys [fname lname]}]
-  {:pre [(string? fname) (string? lname)]}
-  (str fname &quot; &quot; lname))
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/prickly-witty-oil-74226603?console=1" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
 
-(user-&gt;full-name {:lname &quot;Doe&quot;})
-
-;; Execution error (AssertionError) at user/user-&gt;full-name (form-init2978563934614804694.clj:1).
-;; Assert failed: (string? fname)
-</code></pre>
 <p>In UIx, the syntax of the <code>defui</code> macro inherits most properties of <code>defn</code>, including pre conditions.</p>
 <pre><code class="language-clojure">(defui button
   [{:keys [children on-click]}]
@@ -56,42 +50,10 @@
     children))
 </code></pre>
 <p>To improve things further and leverage <code>clojure.spec</code> for rich data validation and helpful error messages, it&#39;s recommended to use <a href="https://github.com/adamrenklint/preo">adamrenklint/preo</a> library.</p>
-<pre><code class="language-clojure">(ns app.ui
-  (:require [clojure.spec.alpha :as s]
-            [preo.core :as p]))
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/great-panicky-refrigerator-b63d507d?console=1" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
 
-(s/def :prop/on-click fn?)
-(s/def ::button (s/keys :req-un [:prop/on-click]))
-
-(defui button
-  [{:keys [children on-click] :as props}]
-  {:pre [(p/arg! ::button props)]}
-  ($ :button {:on-click on-click}
-    children))
-
-;; trigger spec error
-($ button {})
-
-
-Invalid argument: props
--- Spec failed --------------------
-
-  {}
-
-should contain key: :on-click
-
-| key       | spec |
-|===========+======|
-| :on-click | fn?  |
-
--- Relevant specs -------
-
-:app.ui/button:
-  (clojure.spec.alpha/keys :req-un [:prop/on-click])
-
--------------------------
-Detected 1 error
-</code></pre>
 <blockquote>
 <p>Most likely you don&#39;t want those runtime checks in production. Make sure <code>:elide-asserts</code> compiler option is set to <code>true</code>, unless if you are using <code>shadow-cljs</code>, where the option is set to <code>true</code> for <code>release</code> builds by default.</p>
 </blockquote>

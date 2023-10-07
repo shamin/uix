@@ -4,17 +4,9 @@ While in React it's common to use [`PropTypes`](https://legacy.reactjs.org/docs/
 
 Here's a typical example using `defn`.
 
-```clojure
-(defn user->full-name
-  [{:keys [fname lname]}]
-  {:pre [(string? fname) (string? lname)]}
-  (str fname " " lname))
-
-(user->full-name {:lname "Doe"})
-
-;; Execution error (AssertionError) at user/user->full-name (form-init2978563934614804694.clj:1).
-;; Assert failed: (string? fname)
-```
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/prickly-witty-oil-74226603?console=1" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
 
 In UIx, the syntax of the `defui` macro inherits most properties of `defn`, including pre conditions.
 
@@ -28,43 +20,9 @@ In UIx, the syntax of the `defui` macro inherits most properties of `defn`, incl
 
 To improve things further and leverage `clojure.spec` for rich data validation and helpful error messages, it's recommended to use [adamrenklint/preo](https://github.com/adamrenklint/preo) library.
 
-```clojure
-(ns app.ui
-  (:require [clojure.spec.alpha :as s]
-            [preo.core :as p]))
-
-(s/def :prop/on-click fn?)
-(s/def ::button (s/keys :req-un [:prop/on-click]))
-
-(defui button
-  [{:keys [children on-click] :as props}]
-  {:pre [(p/arg! ::button props)]}
-  ($ :button {:on-click on-click}
-    children))
-
-;; trigger spec error
-($ button {})
-
-
-Invalid argument: props
--- Spec failed --------------------
-
-  {}
-
-should contain key: :on-click
-
-| key       | spec |
-|===========+======|
-| :on-click | fn?  |
-
--- Relevant specs -------
-
-:app.ui/button:
-  (clojure.spec.alpha/keys :req-un [:prop/on-click])
-
--------------------------
-Detected 1 error
-```
+<div class="sandbox">
+<iframe src="https://www.clojurescript.studio/ee/great-panicky-refrigerator-b63d507d?console=1" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
+</div>
 
 > Most likely you don't want those runtime checks in production. Make sure `:elide-asserts` compiler option is set to `true`, unless if you are using `shadow-cljs`, where the option is set to `true` for `release` builds by default.
 
