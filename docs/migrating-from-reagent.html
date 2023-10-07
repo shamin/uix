@@ -30,10 +30,20 @@
         </div>
       </div>
     </header>
-    <main><h1 id="migrating-from-reagent">Migrating from Reagent</h1>
-<p>This document describes how to migrate Reagent components to UIx, including syntactical differences and how various patterns in Reagent translate to UIx. UIx doesn&#39;t provide any abstractions on top of React, thus it is recommended to make yourself familiar with React in general.</p>
-<h2 id="element-syntax">Element syntax</h2>
-<p><code>$</code> macro instead of vector-based Hiccup</p>
+    <main>
+            <h1 class="heading">
+            Migrating from Reagent
+              <a class="anchor" href="#migrating-from-reagent">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>This document describes how to migrate Reagent components to UIx, including syntactical differences and how various patterns in Reagent translate to UIx. UIx doesn&#39;t provide any abstractions on top of React, thus it is recommended to make yourself familiar with React in general.</p>
+
+            <h2 class="heading">
+            Element syntax
+              <a class="anchor" href="#element-syntax">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p><code>$</code> macro instead of vector-based Hiccup</p>
 <pre><code class="language-clojure">;; Reagent
 [:div#id.class {:on-click f}
   [:div]]
@@ -42,8 +52,13 @@
 ($ :div#id.class {:on-click f}
   ($ :div))
 </code></pre>
-<h2 id="component-syntax">Component syntax</h2>
-<p><code>uix.core/defui</code> macro instead of <code>defn</code></p>
+
+            <h2 class="heading">
+            Component syntax
+              <a class="anchor" href="#component-syntax">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p><code>uix.core/defui</code> macro instead of <code>defn</code></p>
 <pre><code class="language-clojure">;; Reagent
 (defn avatar [{:keys [src]}]
   [:img {:src src}])
@@ -52,8 +67,13 @@
 (defui avatar [{:keys [src]}]
   ($ :img {:src src}))
 </code></pre>
-<h2 id="local-state">Local state</h2>
-<p><code>uix.core/use-state</code> hook instead of <code>r/with-let</code> or a closure + <code>r/atom</code></p>
+
+            <h2 class="heading">
+            Local state
+              <a class="anchor" href="#local-state">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p><code>uix.core/use-state</code> hook instead of <code>r/with-let</code> or a closure + <code>r/atom</code></p>
 <pre><code class="language-clojure">;; Reagent
 (defn counter [props]
   (let [state (r/atom 0)]
@@ -69,8 +89,13 @@
   (let [[value set-value!] (uix/use-state 0)]
     ($ :button {:on-click #(set-value! inc)} value)))
 </code></pre>
-<h2 id="component-props">Component props</h2>
-<p>A single map of props instead of arbitrary positional arguments</p>
+
+            <h2 class="heading">
+            Component props
+              <a class="anchor" href="#component-props">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>A single map of props instead of arbitrary positional arguments</p>
 <pre><code class="language-clojure">;; Reagent, positional arguments
 (defn button [{:keys [on-click]} text]
   …)
@@ -83,8 +108,13 @@
 
 ($ button {:on-click f :text &quot;press&quot;})
 </code></pre>
-<h3 id="child-elements-in-props">Child elements in props</h3>
-<p>Child elements are always put under <code>:children</code> key in props map, instead of being positional arguments</p>
+
+            <h3 class="heading">
+            Child elements in props
+              <a class="anchor" href="#child-elements-in-props">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h3><p>Child elements are always put under <code>:children</code> key in props map, instead of being positional arguments</p>
 <pre><code class="language-clojure">;; Reagent, positional arguments
 (defn button [{:keys [on-click]} text]
   …)
@@ -113,8 +143,13 @@
 
 ($ button {:on-click f} &quot;press&quot;)
 </code></pre>
-<h2 id="key-attribute-in-child-elements"><code>key</code> attribute in child elements</h2>
-<pre><code class="language-clojure">;; Reagent
+
+            <h2 class="heading">
+            <code>key</code> attribute in child elements
+              <a class="anchor" href="#-code-key-code-attribute-in-child-elements">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><pre><code class="language-clojure">;; Reagent
 (defn ui-list [{:keys [items]}]
   [:ul
     (for [item items]
@@ -128,8 +163,13 @@
       ($ :li {:key (:id item)} ;; only as attribute
         (:name item)))))
 </code></pre>
-<h2 id="global-shared-state">Global shared state</h2>
-<p>In Reagent it&#39;s common to have shared state in the form of a global var that holds an <code>r/atom</code>. In UIx and React shared state is not global at the namespace level, instead it&#39;s a local state that lives in UI tree and is being shared down the tree via React Context.</p>
+
+            <h2 class="heading">
+            Global shared state
+              <a class="anchor" href="#global-shared-state">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>In Reagent it&#39;s common to have shared state in the form of a global var that holds an <code>r/atom</code>. In UIx and React shared state is not global at the namespace level, instead it&#39;s a local state that lives in UI tree and is being shared down the tree via React Context.</p>
 <pre><code class="language-clojure">;; Reagent
 (def state (r/atom 0)) ;; declare shared state
 

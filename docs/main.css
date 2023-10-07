@@ -113,6 +113,13 @@ p img {
 .home pre {
   display: none;
 }
+.anchor {
+  display: none;
+  text-decoration: none;
+}
+.heading:hover .anchor {
+  display: inline-block;
+}
 @media (max-width: 800px) {
   .page-header-inner {
     flex-direction: column;

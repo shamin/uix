@@ -30,8 +30,13 @@
         </div>
       </div>
     </header>
-    <main><h1 id="using-react-native-with-uix">Using React Native with UIx</h1>
-<p>Follow the steps below or just run <code>npx create-uix-app@latest {{app-name}} --react-native</code> in existing React Native project.</p>
+    <main>
+            <h1 class="heading">
+            Using React Native with UIx
+              <a class="anchor" href="#using-react-native-with-uix">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>Follow the steps below or just run <code>npx create-uix-app@latest {{app-name}} --react-native</code> in existing React Native project.</p>
 <ol>
 <li>Create RN project</li>
 </ol>
@@ -127,8 +132,13 @@ yarn ios
 <p>Bring up the developer menu in the simulator (Cmd+D) and disable Fast Refresh.</p>
 <img src="disable_fast_refresh.jpg" width="200" />
 
-<h2 id="rn-elements-as-keywords">RN elements as keywords</h2>
-<p>If you prefer keyword elements in RN, you can wrap <code>$</code> macro to resolve
+
+            <h2 class="heading">
+            RN elements as keywords
+              <a class="anchor" href="#rn-elements-as-keywords">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>If you prefer keyword elements in RN, you can wrap <code>$</code> macro to resolve
 keywords to RN components:</p>
 <pre><code class="language-clojure">;; src/app/uix.cljc
 (ns app.uix

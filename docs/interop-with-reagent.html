@@ -30,21 +30,41 @@
         </div>
       </div>
     </header>
-    <main><h1 id="interop-with-reagent">Interop with Reagent</h1>
-<h2 id="using-reagent-components-in-uix">Using Reagent components in UIx</h2>
-<p>In order to use a Reagent component in UIx you need to wrap Reagent&#39;s Hiccup with <code>r/as-element</code> so that Reagent can take care of Hiccup and convert it into React calls.</p>
+    <main>
+            <h1 class="heading">
+            Interop with Reagent
+              <a class="anchor" href="#interop-with-reagent">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1>
+            <h2 class="heading">
+            Using Reagent components in UIx
+              <a class="anchor" href="#using-reagent-components-in-uix">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>In order to use a Reagent component in UIx you need to wrap Reagent&#39;s Hiccup with <code>r/as-element</code> so that Reagent can take care of Hiccup and convert it into React calls.</p>
 <div class="sandbox">
 <iframe src="https://www.clojurescript.studio/ee/apprehensive-gentle-eggplant-8fa6554f" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 </div>
 
-<h2 id="using-uix-components-in-reagent">Using UIx components in Reagent</h2>
-<p>When using a UIx component in Reagent (or anywhere else) you can continue to use the<code>$</code> macro without changing anything. The macro will make sure that UIx component is properly created no matter which context it is used in.</p>
+
+            <h2 class="heading">
+            Using UIx components in Reagent
+              <a class="anchor" href="#using-uix-components-in-reagent">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>When using a UIx component in Reagent (or anywhere else) you can continue to use the<code>$</code> macro without changing anything. The macro will make sure that UIx component is properly created no matter which context it is used in.</p>
 <div class="sandbox">
 <iframe src="https://www.clojurescript.studio/ee/rough-nutty-shoe-b7e6841e" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 </div>
 
-<h2 id="syncing-with-ratoms-and-re-frame">Syncing with ratoms and re-frame</h2>
-<p>External data sources can be consumed in hooks-based components via <code>useSyncExternalStoreWithSelector</code> from the <code>&quot;use-sync-external-store&quot;</code> package. This part is only concerned about making the UI components reactive on external data sources. How the state is updated doesn&#39;t change.</p>
+
+            <h2 class="heading">
+            Syncing with ratoms and re-frame
+              <a class="anchor" href="#syncing-with-ratoms-and-re-frame">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>External data sources can be consumed in hooks-based components via <code>useSyncExternalStoreWithSelector</code> from the <code>&quot;use-sync-external-store&quot;</code> package. This part is only concerned about making the UI components reactive on external data sources. How the state is updated doesn&#39;t change.</p>
 <div class="sandbox">
 <iframe src="https://www.clojurescript.studio/ee/bumpy-old-stone-12d9037c" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 </div>

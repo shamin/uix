@@ -2,7 +2,22 @@ const marked = require("marked");
 const { gfmHeadingId } = require("marked-gfm-heading-id");
 const fs = require("fs");
 
+const renderer = {
+  heading(text, level) {
+    const escapedText = text.toLowerCase().replace(/[^\w]+/g, "-");
+
+    return `
+            <h${level} class="heading">
+            ${text}
+              <a class="anchor" href="#${escapedText}">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h${level}>`;
+  },
+};
+
 marked.use(gfmHeadingId({}));
+marked.use({ renderer });
 
 const tmpl = fs.readFileSync("./tmpl.html", "utf8");
 const indexTmpl = fs.readFileSync("./index_tmpl.html", "utf8");

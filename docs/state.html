@@ -30,8 +30,13 @@
         </div>
       </div>
     </header>
-    <main><h1 id="state">State</h1>
-<p>UIx is using <a href="https://reactjs.org/docs/hooks-state.html#hooks-and-function-components">React&#39;s state hook</a> for local state.</p>
+    <main>
+            <h1 class="heading">
+            State
+              <a class="anchor" href="#state">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>UIx is using <a href="https://reactjs.org/docs/hooks-state.html#hooks-and-function-components">React&#39;s state hook</a> for local state.</p>
 <pre><code class="language-clojure">(defui form []
   (let [[value set-value!] (uix.core/use-state &quot;&quot;)]
     ($ :input
@@ -48,8 +53,13 @@
 
 (uix.core/use-state calculate-initial-value)
 </code></pre>
-<h2 id="reusable-state">Reusable state</h2>
-<p>Because state is not directly coupled with components it is possible to build reusable behaviors on top of it. In the example below we create a <code>use-validation</code> function to encapsulate logic that keeps track of a value and applies updates when the value satisfies provided validation function.</p>
+
+            <h2 class="heading">
+            Reusable state
+              <a class="anchor" href="#reusable-state">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>Because state is not directly coupled with components it is possible to build reusable behaviors on top of it. In the example below we create a <code>use-validation</code> function to encapsulate logic that keeps track of a value and applies updates when the value satisfies provided validation function.</p>
 <div class="sandbox">
 <iframe src="https://www.clojurescript.studio/ee/belligerent-appalling-knife-2630d8e3" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 </div>

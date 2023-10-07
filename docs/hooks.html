@@ -30,17 +30,32 @@
         </div>
       </div>
     </header>
-    <main><h1 id="hooks">Hooks</h1>
-<p>UIx wraps existing React hooks to smooth over some rough spots and provide a more idiomatic interface for Clojure. <code>uix.core</code> exposes only the default React hooks, named equivalently to the JS versions except in kebab-case, e.g. <code>useEffect</code> becomes <code>use-effect</code>.</p>
+    <main>
+            <h1 class="heading">
+            Hooks
+              <a class="anchor" href="#hooks">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>UIx wraps existing React hooks to smooth over some rough spots and provide a more idiomatic interface for Clojure. <code>uix.core</code> exposes only the default React hooks, named equivalently to the JS versions except in kebab-case, e.g. <code>useEffect</code> becomes <code>use-effect</code>.</p>
 <p>There are multiple differences from pure React though.</p>
-<h2 id="dependency-array">Dependency array</h2>
-<p>Some hooks accept an array of dependencies as the second argument. While in pure React this has to be an array literal, <code>#js []</code>, UIx uses a vector literal <code>[]</code> to make it more idiomatic for Clojure.</p>
+
+            <h2 class="heading">
+            Dependency array
+              <a class="anchor" href="#dependency-array">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>Some hooks accept an array of dependencies as the second argument. While in pure React this has to be an array literal, <code>#js []</code>, UIx uses a vector literal <code>[]</code> to make it more idiomatic for Clojure.</p>
 <pre><code class="language-clojure">(uix/use-effect
   (fn [] (prn x))
   [x])
 </code></pre>
-<h2 id="how-are-dependencies-compared">How are dependencies compared?</h2>
-<p>When the same dependency has a different value between component updates, the hook will rerun.</p>
+
+            <h2 class="heading">
+            How are dependencies compared?
+              <a class="anchor" href="#how-are-dependencies-compared-">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>When the same dependency has a different value between component updates, the hook will rerun.</p>
 <pre><code class="language-clojure">;; 1st update
 (uix/use-effect
   (fn [] (prn x)) ;; prn 1
@@ -78,11 +93,21 @@
     (fn [] (prn a)) ;; same, still executed for the same reason
     [a])))
 </code></pre>
-<h3 id="what-about-other-clojurescript-primitives">What about other ClojureScript primitives?</h3>
-<p>In addition to JavaScript primitives like <code>Number</code> or <code>String</code>, ClojureScript has keywords, symbols, and UUIDs that are represented as JS objects when compiled into JS and thus fall into the same trap with equality checks.</p>
+
+            <h3 class="heading">
+            What about other ClojureScript primitives?
+              <a class="anchor" href="#what-about-other-clojurescript-primitives-">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h3><p>In addition to JavaScript primitives like <code>Number</code> or <code>String</code>, ClojureScript has keywords, symbols, and UUIDs that are represented as JS objects when compiled into JS and thus fall into the same trap with equality checks.</p>
 <p>To make things more idiomatic and less cumbersome in Clojure, UIx automatically stringifies those three types when passed in the dependency vector.</p>
-<h2 id="return-value-in-effect-hooks">Return value in effect hooks</h2>
-<p>The <em>setup</em> function, which is passed into one of the effect hooks, requires the return value to be either a function (that will be called on <em>cleanup</em>) or <code>js/undefined</code>. Otherwise React will throw an error saying that it got something else.</p>
+
+            <h2 class="heading">
+            Return value in effect hooks
+              <a class="anchor" href="#return-value-in-effect-hooks">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>The <em>setup</em> function, which is passed into one of the effect hooks, requires the return value to be either a function (that will be called on <em>cleanup</em>) or <code>js/undefined</code>. Otherwise React will throw an error saying that it got something else.</p>
 <pre><code class="language-clojure">(react/useEffect
   (fn []
     :keyword) ;; returning `:keyword` here will throw
@@ -119,10 +144,20 @@
   [])          ;; it&#39;s gonna be executed as a cleanup function,
              ;; is that intended?
 </code></pre>
-<h2 id="differences-from-use-callback-and-use-memo-hooks">Differences from <code>use-callback</code> and <code>use-memo</code> hooks</h2>
-<p>In pure React both the <code>use-callback</code> and <code>use-memo</code> hooks accept an optional dependency array. However, since the purpose of both hooks is memoization it generally doesn&#39;t make sense to call them without any dependencies; not providing the dependency array effectively means there&#39;s no memoization applied. In JavaScript this is enforced by an ESLint rule. In UIx on we simply removed the single arity method for those hooks, and so you must always pass a dependency vector.</p>
-<h2 id="use-ref-hook"><code>use-ref</code> hook</h2>
-<p>The <code>use-ref</code> hook returns an object that has a stable identity throughout the lifecycle of a component and allows storing arbitrary values inside of it. A ref is basically a mutable container bound to an instance of a component. This aligns pretty well with Clojure&#39;s <code>ref</code> types, namely <code>Atom</code> which is commonly used as a mutable container for immutable values.</p>
+
+            <h2 class="heading">
+            Differences from <code>use-callback</code> and <code>use-memo</code> hooks
+              <a class="anchor" href="#differences-from-code-use-callback-code-and-code-use-memo-code-hooks">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>In pure React both the <code>use-callback</code> and <code>use-memo</code> hooks accept an optional dependency array. However, since the purpose of both hooks is memoization it generally doesn&#39;t make sense to call them without any dependencies; not providing the dependency array effectively means there&#39;s no memoization applied. In JavaScript this is enforced by an ESLint rule. In UIx on we simply removed the single arity method for those hooks, and so you must always pass a dependency vector.</p>
+
+            <h2 class="heading">
+            <code>use-ref</code> hook
+              <a class="anchor" href="#-code-use-ref-code-hook">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>The <code>use-ref</code> hook returns an object that has a stable identity throughout the lifecycle of a component and allows storing arbitrary values inside of it. A ref is basically a mutable container bound to an instance of a component. This aligns pretty well with Clojure&#39;s <code>ref</code> types, namely <code>Atom</code> which is commonly used as a mutable container for immutable values.</p>
 <p>While in pure React <code>useRef</code> returns an object with a <code>current</code> property, in UIx <code>use-ref</code> returns the same object but with an API identical to <code>Atom</code>. The ref can be dereferenced using <code>@</code> to read the current value, and updated via <code>reset!</code> or <code>swap!</code> to set a new value.</p>
 <p>Note that unlike <code>r/atom</code> in Reagent, a ref in UIx and React is not a state primitive, it&#39;s a mutable value and doesn&#39;t trigger an update.</p>
 <pre><code class="language-clojure">(defui component []
@@ -136,8 +171,13 @@
 <iframe src="https://www.clojurescript.studio/ee/helpful-small-thailand-254d0308?console=1" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 </div>
 
-<h2 id="creating-custom-hooks">Creating custom hooks</h2>
-<p>While custom hooks can be defined as normal functions via <code>defn</code>, it&#39;s recommended to use <code>uix.core/defhook</code> macro when creating custom hooks.</p>
+
+            <h2 class="heading">
+            Creating custom hooks
+              <a class="anchor" href="#creating-custom-hooks">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>While custom hooks can be defined as normal functions via <code>defn</code>, it&#39;s recommended to use <code>uix.core/defhook</code> macro when creating custom hooks.</p>
 <p>Here are some benefits of using <code>defhook</code>:</p>
 <ol>
 <li>Enforced naming convention: hooks names must start with <code>use-</code>. The macro performs compile time check.</li>

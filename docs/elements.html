@@ -30,10 +30,20 @@
         </div>
       </div>
     </header>
-    <main><h1 id="elements">Elements</h1>
-<p>UIx is using <code>$</code> to create elements that describe UI structure. There are 3 main types of elements: DOM elements, UIx component instances, and interop elements.</p>
-<h2 id="dom-elements">DOM elements</h2>
-<p><code>$</code> takes a tag name keyword, an optional map of attributes, and zero or more child elements.</p>
+    <main>
+            <h1 class="heading">
+            Elements
+              <a class="anchor" href="#elements">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>UIx is using <code>$</code> to create elements that describe UI structure. There are 3 main types of elements: DOM elements, UIx component instances, and interop elements.</p>
+
+            <h2 class="heading">
+            DOM elements
+              <a class="anchor" href="#dom-elements">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p><code>$</code> takes a tag name keyword, an optional map of attributes, and zero or more child elements.</p>
 <pre><code class="language-clojure">($ :button {:title &quot;Submit&quot;} &quot;press me&quot;)
 </code></pre>
 <p>Element name is declared as a keyword with optional <code>id</code> and <code>class</code> attributes defined as a part of the name. Together they resemble CSS selector syntax.</p>
@@ -41,8 +51,13 @@
 ($ :h1.heading {:class &quot;h1&quot;} &quot;👋&quot;) ;; &lt;h1 class=&quot;heading h1&quot;&gt;👋&lt;/h1&gt;
 ($ :button#id.class1.class2) ;; &lt;button id=&quot;id&quot; class=&quot;class1 class2&quot;&gt;&lt;/button&gt;
 </code></pre>
-<h2 id="uix-component-instances">UIx component instances</h2>
-<p>Component instances are also created via the <code>$</code> macro call, where the first argument is the component function itself, the second argument is an optional map of props, and the rest are child elements.</p>
+
+            <h2 class="heading">
+            UIx component instances
+              <a class="anchor" href="#uix-component-instances">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>Component instances are also created via the <code>$</code> macro call, where the first argument is the component function itself, the second argument is an optional map of props, and the rest are child elements.</p>
 <pre><code class="language-clojure">(defui button [{:keys [on-click children]}]
   ($ :button.btn {:on-click on-click}
     children))
@@ -50,8 +65,13 @@
 ($ button {:on-click #(js/console.log :click)}
   &quot;press me&quot;)
 </code></pre>
-<h2 id="react-component-instances">React component instances</h2>
-<p>React components written in JavaScript can be used directly in UIx with a minor differences in how props are passed into a component. See more detalis on the <a href="/interop-with-react.html">“Interop with React”</a> page.</p>
+
+            <h2 class="heading">
+            React component instances
+              <a class="anchor" href="#react-component-instances">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>React components written in JavaScript can be used directly in UIx with a minor differences in how props are passed into a component. See more detalis on the <a href="/interop-with-react.html">“Interop with React”</a> page.</p>
 <pre><code class="language-clojure">($ Button {:on-click #(js/console.log :click)}
   &quot;press me&quot;)
 </code></pre>

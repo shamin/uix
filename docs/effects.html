@@ -30,8 +30,13 @@
         </div>
       </div>
     </header>
-    <main><h1 id="effects">Effects</h1>
-<p>UIx provides a way to perform side effects in components via <a href="https://reactjs.org/docs/hooks-effect.html">React’s effect hook</a>. Effects are useful for making HTTP requests, interacting with the DOM, or performing any kind of impure operation that mutates some global state and might need to be cleaned up at some point in the future.</p>
+    <main>
+            <h1 class="heading">
+            Effects
+              <a class="anchor" href="#effects">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>UIx provides a way to perform side effects in components via <a href="https://reactjs.org/docs/hooks-effect.html">React’s effect hook</a>. Effects are useful for making HTTP requests, interacting with the DOM, or performing any kind of impure operation that mutates some global state and might need to be cleaned up at some point in the future.</p>
 <p>The <code>uix.core/use-effect</code> function wraps React&#39;s <code>useEffect</code> hook and takes care of handling certain inconsistencies between JS and Clojure worlds so that you don&#39;t have to. More information about effect hook is available in <a href="https://reactjs.org/docs/hooks-effect.html">React documentation on effect hook</a>.</p>
 <p>In the example below, the effect&#39;s callback will execute and bring up an alert after every update of the component.</p>
 <div class="sandbox">

@@ -30,8 +30,13 @@
         </div>
       </div>
     </header>
-    <main><h1 id="props-validation">Props validation</h1>
-<p>While in React it&#39;s common to use <a href="https://legacy.reactjs.org/docs/typechecking-with-proptypes.html"><code>PropTypes</code></a> for runtime validation or <a href="https://www.typescriptlang.org/docs/handbook/jsx.html#function-component">TypeScript</a> for static type checking, in Clojure we can leverage <code>:pre</code> conditions to assert component&#39;s props at runtime.</p>
+    <main>
+            <h1 class="heading">
+            Props validation
+              <a class="anchor" href="#props-validation">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>While in React it&#39;s common to use <a href="https://legacy.reactjs.org/docs/typechecking-with-proptypes.html"><code>PropTypes</code></a> for runtime validation or <a href="https://www.typescriptlang.org/docs/handbook/jsx.html#function-component">TypeScript</a> for static type checking, in Clojure we can leverage <code>:pre</code> conditions to assert component&#39;s props at runtime.</p>
 <p>Here&#39;s a typical example using <code>defn</code>.</p>
 <pre><code class="language-clojure">(defn user-&gt;full-name
   [{:keys [fname lname]}]

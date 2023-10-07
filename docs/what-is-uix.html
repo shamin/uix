@@ -30,21 +30,46 @@
         </div>
       </div>
     </header>
-    <main><h1 id="what-is-uix">What is UIx?</h1>
-<p>UIx is a ClojureScript library. It is a wrapper for React that provides an idiomatic interface into modern React.</p>
+    <main>
+            <h1 class="heading">
+            What is UIx?
+              <a class="anchor" href="#what-is-uix-">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>UIx is a ClojureScript library. It is a wrapper for React that provides an idiomatic interface into modern React.</p>
 <blockquote>
 <p>Because UIx is a wrapper library for React, it&#39;s highly recommended to learn more about React.js itself and make yourself comfortable with its concepts. Read <a href="https://beta.reactjs.org/">the docs</a> and take a <a href="https://epicreact.dev/">course</a> on <a href="https://www.joyofreact.com/">React</a>.</p>
 </blockquote>
-<h2 id="what-is-modern-react">What is modern React?</h2>
-<p>A set of new APIs that also includes revamped rendering machinery. For more information on that topic read <a href="https://17.reactjs.org/docs/concurrent-mode-intro.html">“Introducing Concurrent Mode (Experimental)”</a>.</p>
-<h2 id="hows-it-different-from-existing-clojurescript-libraries">How&#39;s it different from existing ClojureScript libraries?</h2>
-<p>Existing libraries came out at the time when React didn&#39;t have proper scheduling and prioritization mechanisms and components had to be declared as JavaScript classes. Most of the wrappers had to invent their own scheduling on top of React and deal with JS classes while presenting them nicely as normal ClojureScript functions with Hiccup.</p>
+
+            <h2 class="heading">
+            What is modern React?
+              <a class="anchor" href="#what-is-modern-react-">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>A set of new APIs that also includes revamped rendering machinery. For more information on that topic read <a href="https://17.reactjs.org/docs/concurrent-mode-intro.html">“Introducing Concurrent Mode (Experimental)”</a>.</p>
+
+            <h2 class="heading">
+            How&#39;s it different from existing ClojureScript libraries?
+              <a class="anchor" href="#how-39-s-it-different-from-existing-clojurescript-libraries-">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>Existing libraries came out at the time when React didn&#39;t have proper scheduling and prioritization mechanisms and components had to be declared as JavaScript classes. Most of the wrappers had to invent their own scheduling on top of React and deal with JS classes while presenting them nicely as normal ClojureScript functions with Hiccup.</p>
 <p>Today what we call modern React includes a rendering mechanism that takes care of putting stuff on the screen efficiently and also allows declaring components directly as functions. New <a href="https://reactjs.org/docs/hooks-intro.html">APIs</a> to help deal with side effects and state allow better modularity and reusability.</p>
 <p>While existing code and ClojureScript wrappers can still use newer versions of React they cannot leverage all of the new features and improved rendering without introducing breaking changes or affecting performance in order to support backwards compatibility.</p>
-<h2 id="social-aspect">Social aspect</h2>
-<p>UIx v2 is a rewrite of the <a href="https://github.com/roman01la/uix">original library</a> developed by <a href="https://github.com/roman01la">Roman Liutikov</a> for <a href="https://pitch.com/">Pitch</a>. One of the main goals of v2 was to get closer to React so that JavaScript engineers familiar with React can start using the library in no time. The motivation for this goal is driven by the fact that majority of front-end engineers switching to Clojure are coming from JavaScript background, thus we wanted to make this transition easier for them and make sure that the knowledge they already aqcuired is still applicable in UI development with ClojureScript.</p>
-<h2 id="what-does-uix-offer">What does UIx offer?</h2>
-<p>As a ClojureScript wrapper the library offers an idiomatic interface into React while trying to be familiar to both those who have used existing wrappers and those who are coming from the JavaScript world.</p>
+
+            <h2 class="heading">
+            Social aspect
+              <a class="anchor" href="#social-aspect">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>UIx v2 is a rewrite of the <a href="https://github.com/roman01la/uix">original library</a> developed by <a href="https://github.com/roman01la">Roman Liutikov</a> for <a href="https://pitch.com/">Pitch</a>. One of the main goals of v2 was to get closer to React so that JavaScript engineers familiar with React can start using the library in no time. The motivation for this goal is driven by the fact that majority of front-end engineers switching to Clojure are coming from JavaScript background, thus we wanted to make this transition easier for them and make sure that the knowledge they already aqcuired is still applicable in UI development with ClojureScript.</p>
+
+            <h2 class="heading">
+            What does UIx offer?
+              <a class="anchor" href="#what-does-uix-offer-">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>As a ClojureScript wrapper the library offers an idiomatic interface into React while trying to be familiar to both those who have used existing wrappers and those who are coming from the JavaScript world.</p>
 </main>
     <footer class="page-footer"><div></div> <a class="nav-link" href="components.html">Next “Components” 👉</a></footer>
     <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>

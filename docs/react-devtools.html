@@ -30,10 +30,20 @@
         </div>
       </div>
     </header>
-    <main><h1 id="react-devtools">React DevTools</h1>
-<p><a href="https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en">React DevTools</a> is a browser extension that can be used to inspect live UI tree, component props and profile performance in DevTools.</p>
-<h2 id="uix-specifics">UIx specifics</h2>
-<ul>
+    <main>
+            <h1 class="heading">
+            React DevTools
+              <a class="anchor" href="#react-devtools">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p><a href="https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en">React DevTools</a> is a browser extension that can be used to inspect live UI tree, component props and profile performance in DevTools.</p>
+
+            <h2 class="heading">
+            UIx specifics
+              <a class="anchor" href="#uix-specifics">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><ul>
 <li>Jump to component definition button [2] works as expected, unlike in Reagent</li>
 <li>Component&#39;s props preview [3] displays JS implementation of props map instead of using Custom Formatters. The workaround for this is to use debug button [1] that will print component&#39;s data to browser console where a custom formatter (<a href="/installation.html#enable-custom-formatters-in-chrome">here&#39;s how to install and enable custom formatters in Chrome</a>) will print props map correctly [4]</li>
 </ul>

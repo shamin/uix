@@ -30,8 +30,13 @@
         </div>
       </div>
     </header>
-    <main><h1 id="components">Components</h1>
-<p>UIx components are defined using the <code>defui</code> macro, which returns React elements created using the <code>$</code> macro. The signature of <code>$</code> macro is similar to <code>React.createElement</code>, with an additional shorthand syntax in the tag name to declare CSS id and class names (similar to Hiccup):</p>
+    <main>
+            <h1 class="heading">
+            Components
+              <a class="anchor" href="#components">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>UIx components are defined using the <code>defui</code> macro, which returns React elements created using the <code>$</code> macro. The signature of <code>$</code> macro is similar to <code>React.createElement</code>, with an additional shorthand syntax in the tag name to declare CSS id and class names (similar to Hiccup):</p>
 <pre><code class="language-js">// React without JSX
 React.createElement(&quot;div&quot;, { onClick: f }, child1, child2);
 </code></pre>
@@ -44,8 +49,13 @@ React.createElement(&quot;div&quot;, { onClick: f }, child1, child2);
   ></iframe>
 </div>
 
-<h2 id="inline-components">Inline components</h2>
-<p>Sometimes you might want to create an inline component using anonymous function. Let&#39;s take a look at the following example:</p>
+
+            <h2 class="heading">
+            Inline components
+              <a class="anchor" href="#inline-components">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>Sometimes you might want to create an inline component using anonymous function. Let&#39;s take a look at the following example:</p>
 <pre><code class="language-clojure">(defui ui-list [{{:keys [key-fn data item]}}]
   ($ :div
     (for [x data]
@@ -72,8 +82,13 @@ React.createElement(&quot;div&quot;, { onClick: f }, child1, child2);
    :item (uix/fn [{:keys [data]}]
            ($ :div (:id data)))})
 </code></pre>
-<h2 id="component-props">Component props</h2>
-<p><code>defui</code> components are similar to React’s JSX components. They take props and children and provide them within a component as a single map of props.</p>
+
+            <h2 class="heading">
+            Component props
+              <a class="anchor" href="#component-props">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p><code>defui</code> components are similar to React’s JSX components. They take props and children and provide them within a component as a single map of props.</p>
 <p>Let&#39;s take a look at the following example:</p>
 <pre><code class="language-js">function Button({ onClick, children }) {
   return &lt;button onClick={onClick}&gt;{children}&lt;/button&gt;;
@@ -89,18 +104,33 @@ React.createElement(&quot;div&quot;, { onClick: f }, child1, child2);
 
 ($ button {:on-click js/console.log} &quot;Press me&quot;)
 </code></pre>
-<h2 id="dom-attributes">DOM attributes</h2>
-<p>DOM attributes are written as keywords in kebab-case. Values that are normally strings without whitespace can be written as keywords as well, which may improve autocompletion in your IDE.</p>
+
+            <h2 class="heading">
+            DOM attributes
+              <a class="anchor" href="#dom-attributes">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>DOM attributes are written as keywords in kebab-case. Values that are normally strings without whitespace can be written as keywords as well, which may improve autocompletion in your IDE.</p>
 <pre><code class="language-clojure">($ :button {:title &quot;play button&quot;
             :data-test-id :play-button})
 </code></pre>
-<h2 id="children">children</h2>
-<p>Similar to React, child components are passed as <code>children</code> in the props map. <code>children</code> is a JS Array of React elements.</p>
+
+            <h2 class="heading">
+            children
+              <a class="anchor" href="#children">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>Similar to React, child components are passed as <code>children</code> in the props map. <code>children</code> is a JS Array of React elements.</p>
 <pre><code class="language-clojure">(defui popover [{:keys [children]}]
   ($ :div.popover children))
 </code></pre>
-<h2 id="ref-attribute">:ref attribute</h2>
-<p><a href="https://reactjs.org/docs/refs-and-the-dom.html">Refs</a> provide a way to refer to DOM nodes. In UIx <code>ref</code> is passed as a normal attribute onto DOM elements, similar to React. <code>use-ref</code> returns a ref with an Atom-like API: the ref can be dereferenced using <code>@</code> and updated with either <code>clojure.core/reset!</code> or <code>clojure.core/swap!</code>.</p>
+
+            <h2 class="heading">
+            :ref attribute
+              <a class="anchor" href="#-ref-attribute">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p><a href="https://reactjs.org/docs/refs-and-the-dom.html">Refs</a> provide a way to refer to DOM nodes. In UIx <code>ref</code> is passed as a normal attribute onto DOM elements, similar to React. <code>use-ref</code> returns a ref with an Atom-like API: the ref can be dereferenced using <code>@</code> and updated with either <code>clojure.core/reset!</code> or <code>clojure.core/swap!</code>.</p>
 <pre><code class="language-clojure">(defui form []
   (let [ref (uix.core/use-ref)]
     ($ :form
@@ -122,8 +152,13 @@ React.createElement(&quot;div&quot;, { onClick: f }, child1, child2);
       ($ :button {:on-click #(.focus @ref)}
         &quot;press to focus on input&quot;))))
 </code></pre>
-<h2 id="class-based-components">Class-based components</h2>
-<p>Sometimes you want to create a class-based React component, for example an error boundary. For that there&#39;s the <code>uix.core/create-class</code> function.</p>
+
+            <h2 class="heading">
+            Class-based components
+              <a class="anchor" href="#class-based-components">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>Sometimes you want to create a class-based React component, for example an error boundary. For that there&#39;s the <code>uix.core/create-class</code> function.</p>
 <div class="sandbox">
 <iframe src="https://www.clojurescript.studio/ee/blue-sparse-cpu-214da257" style="border:0;border-radius:4px;overflow:hidden;" allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking" sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 </div>

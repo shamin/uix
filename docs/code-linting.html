@@ -30,14 +30,24 @@
         </div>
       </div>
     </header>
-    <main><h1 id="hooks-linter">Hooks linter</h1>
-<p>UIx has a built-in linter that will help you to use React Hooks correctly.
+    <main>
+            <h1 class="heading">
+            Hooks linter
+              <a class="anchor" href="#hooks-linter">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>UIx has a built-in linter that will help you to use React Hooks correctly.
 The linter is built into <code>defui</code>, <code>defhook</code> and the default <code>uix.core/*</code> hooks,
 and
 implements a set of rules from React&#39;s official <a href="https://reactjs.org/docs/hooks-rules.html">ESLint plugin</a>.</p>
 <p>While in the original ESLint plugin there are rules that can be considered as suggestions and thus reported as warnings, most of the rules implemented in UIx should always be followed as breaking them will lead to bugs in your UI. For this reason in UIx a broken rule will fail to build so that it&#39;s impossible to build a project with problematic behaviour in UI components.</p>
-<h2 id="whats-the-rule-of-thumb-to-use-hooks-correctly">What&#39;s the rule of thumb to use Hooks correctly?</h2>
-<p>Call hooks at the top level in the component body.</p>
+
+            <h2 class="heading">
+            What&#39;s the rule of thumb to use Hooks correctly?
+              <a class="anchor" href="#what-39-s-the-rule-of-thumb-to-use-hooks-correctly-">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>Call hooks at the top level in the component body.</p>
 <pre><code class="language-clojure">;; bad
 (defui component [{:keys [active?]}]
   (when active?
@@ -71,9 +81,19 @@ implements a set of rules from React&#39;s official <a href="https://reactjs.org
     [active? id])
   ...))
 </code></pre>
-<h2 id="what-type-of-errors-can-uix-catch">What type of errors can UIx catch?</h2>
-<h3 id="hooks-called-inside-of-conditions-or-iterating-functions">Hooks called inside of conditions or iterating functions</h3>
-<p>The rule here is to call the function at the top level of the component body.</p>
+
+            <h2 class="heading">
+            What type of errors can UIx catch?
+              <a class="anchor" href="#what-type-of-errors-can-uix-catch-">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2>
+            <h3 class="heading">
+            Hooks called inside of conditions or iterating functions
+              <a class="anchor" href="#hooks-called-inside-of-conditions-or-iterating-functions">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h3><p>The rule here is to call the function at the top level of the component body.</p>
 <pre><code class="language-clojure">(defui component [{:keys [active?]}]
   (when active?
     (use-effect ...)) ;; error
@@ -86,8 +106,13 @@ implements a set of rules from React&#39;s official <a href="https://reactjs.org
                  ;; error
        :on-click (use-callback #(rf/dispatch %) [item])}))))
 </code></pre>
-<h3 id="a-hook-doesnt-meet-its-dependencies-requirements">A hook doesn&#39;t meet its dependencies requirements</h3>
-<blockquote>
+
+            <h3 class="heading">
+            A hook doesn&#39;t meet its dependencies requirements
+              <a class="anchor" href="#a-hook-doesn-39-t-meet-its-dependencies-requirements">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h3><blockquote>
 <p>This rule is currently experimental, to opt-out add <code>^:lint/disable</code> meta in front of the deps vector</p>
 </blockquote>
 <p>This rule will check for missing and unnecessary dependencies and suggest a correct deps vector.</p>
@@ -99,8 +124,13 @@ implements a set of rules from React&#39;s official <a href="https://reactjs.org
     [active?]) ;; error, update deps vector to [active? id]
   ...))
 </code></pre>
-<h3 id="unsafe-set-state-in-effect-hook-without-dependencies">Unsafe set-state in effect hook without dependencies</h3>
-<p>This type of code leads to an infinite loop of updates in components.</p>
+
+            <h3 class="heading">
+            Unsafe set-state in effect hook without dependencies
+              <a class="anchor" href="#unsafe-set-state-in-effect-hook-without-dependencies">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h3><p>This type of code leads to an infinite loop of updates in components.</p>
 <pre><code class="language-clojure">(defui component [{:keys [active? id]}]
   (let [[value set-value] (use-state 0)]
     (use-effect
@@ -114,8 +144,13 @@ implements a set of rules from React&#39;s official <a href="https://reactjs.org
         (set-value (inc value)))
       [value]))) ;; fix: only run hook when value changes
 </code></pre>
-<h3 id="a-hook-is-being-passed-something-as-deps-that-is-not-a-vector-literal">A hook is being passed something as deps that is not a vector literal</h3>
-<p>Deps should be always a vector literal of constant size. React doesn&#39;t allow deps to be of dynamic length because it causes issues in UI components.</p>
+
+            <h3 class="heading">
+            A hook is being passed something as deps that is not a vector literal
+              <a class="anchor" href="#a-hook-is-being-passed-something-as-deps-that-is-not-a-vector-literal">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h3><p>Deps should be always a vector literal of constant size. React doesn&#39;t allow deps to be of dynamic length because it causes issues in UI components.</p>
 <pre><code class="language-clojure">;; incorrect
 (defui component [{:keys [labels]}]
   (let [dimensions (use-memo #(measure-labels labels) labels)]
@@ -126,8 +161,13 @@ implements a set of rules from React&#39;s official <a href="https://reactjs.org
   (let [dimensions (use-memo #(measure-labels labels) [labels])]
     ...))
 </code></pre>
-<h3 id="a-hook-is-being-passed-deps-as-a-js-array-instead-of-a-vector">A hook is being passed deps as a JS array instead of a vector</h3>
-<p>This is UIx specific. Since UIx is a Clojure wrapper it expects a vector of deps instead of JS array to be more idiomatic and allow for easier interop with Clojure code.</p>
+
+            <h3 class="heading">
+            A hook is being passed deps as a JS array instead of a vector
+              <a class="anchor" href="#a-hook-is-being-passed-deps-as-a-js-array-instead-of-a-vector">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h3><p>This is UIx specific. Since UIx is a Clojure wrapper it expects a vector of deps instead of JS array to be more idiomatic and allow for easier interop with Clojure code.</p>
 <pre><code class="language-clojure">(defui component [{:keys [html]}]
   (let [html (use-memo #(sanitize-html html) #js [html])] ;; incorrect
     ...))
@@ -136,8 +176,13 @@ implements a set of rules from React&#39;s official <a href="https://reactjs.org
   (let [html (use-memo #(sanitize-html html) [html])] ;; correct
     ...))
 </code></pre>
-<h3 id="a-function-reference-is-passed-into-a-hook-instead-of-an-inline-function">A function reference is passed into a hook instead of an inline function</h3>
-<p>This won&#39;t cause actual bugs, but it prevents further type checking to determine if the hook satisfies dependency requirements, thus it&#39;s encouraged to use inline function instead. Note that the linter might improve in the future and this rule will be deprecated.</p>
+
+            <h3 class="heading">
+            A function reference is passed into a hook instead of an inline function
+              <a class="anchor" href="#a-function-reference-is-passed-into-a-hook-instead-of-an-inline-function">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h3><p>This won&#39;t cause actual bugs, but it prevents further type checking to determine if the hook satisfies dependency requirements, thus it&#39;s encouraged to use inline function instead. Note that the linter might improve in the future and this rule will be deprecated.</p>
 <pre><code class="language-clojure">(defui component [{:keys [active? id]}]
   (let [do-something (fn []
                        (when active?
@@ -152,21 +197,36 @@ implements a set of rules from React&#39;s official <a href="https://reactjs.org
   ;; now linter is able to check whether the effect meets deps requirements correctly
   (use-effect #(do-something active? id) [active? id])))
 </code></pre>
-<h1 id="missing-key-attribute">Missing <code>:key</code> attribute</h1>
-<p>UIx will check for missing <code>:key</code> attribute when a UIx element is rendered as a list item (via <code>for</code>, <code>map</code>, etc.).</p>
+
+            <h1 class="heading">
+            Missing <code>:key</code> attribute
+              <a class="anchor" href="#missing-code-key-code-attribute">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>UIx will check for missing <code>:key</code> attribute when a UIx element is rendered as a list item (via <code>for</code>, <code>map</code>, etc.).</p>
 <pre><code class="language-clojure">(for [x items]
   ($ item {:title &quot;hello&quot; :x x})) ;; error: missing key
 
 (for [x items]
   ($ item {:title &quot;hello&quot; :x x :key x})) ;; no error
 </code></pre>
-<h2 id="config">Config</h2>
-<p>UIx&#39;s linter can be provided with an external configuration that should live in the file <code>.uix/config.edn</code> at the root of your project.</p>
+
+            <h2 class="heading">
+            Config
+              <a class="anchor" href="#config">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>UIx&#39;s linter can be provided with an external configuration that should live in the file <code>.uix/config.edn</code> at the root of your project.</p>
 <pre><code class="language-clojure">{:linters {:react-key {:enabled? false}}}
 ;; the rule is enabled by default
 </code></pre>
-<h1 id="reagent-interop-linter">Reagent interop linter</h1>
-<p>When migrating from Reagent + re-frame to UIx you might want to keep using re-frame or at least stick with it for some time because migrating data management is not as simple as rewriting UI components.</p>
+
+            <h1 class="heading">
+            Reagent interop linter
+              <a class="anchor" href="#reagent-interop-linter">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>When migrating from Reagent + re-frame to UIx you might want to keep using re-frame or at least stick with it for some time because migrating data management is not as simple as rewriting UI components.</p>
 <p>To make sure this transition path is smooth UIx will check for re-frame <code>subscribe</code> calls in UIx components and trigger a compilation error that will suggest the use of a <code>use-subscribe</code> hook instead. It will also point to the <a href="/interop-with-reagent.html#syncing-with-ratoms-and-re-frame">“Syncing with ratoms and re-frame”</a> section in UIx docs.</p>
 <p>Given this piece of code</p>
 <pre><code class="language-clojure">(defui component []
@@ -177,23 +237,38 @@ implements a set of rules from React&#39;s official <a href="https://reactjs.org
 
 Read https://github.com/pitch-io/uix/blob/master/docs/interop-with-reagent.md#syncing-with-ratoms-and-re-frame for more context
 </code></pre>
-<h2 id="config-1">Config</h2>
-<p>It is possible to add re-frame specific rules to the linter config file (located in the file <code>.uix/config.edn</code> at the root of your project).</p>
+
+            <h2 class="heading">
+            Config
+              <a class="anchor" href="#config">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>It is possible to add re-frame specific rules to the linter config file (located in the file <code>.uix/config.edn</code> at the root of your project).</p>
 <pre><code class="language-clojure">{:linters
  {:re-frame
   {:resolve-as {my.app/subscribe re-frame.core/subscribe}}}}
   ;; re-frame.core/subscribe is checked by default
 </code></pre>
-<h1 id="custom-linters">Custom linters</h1>
-<p>UIx exposes a public API to register custom linters, so that you can have your own linting rules specific to your project. There are three types of linters in UIx:</p>
+
+            <h1 class="heading">
+            Custom linters
+              <a class="anchor" href="#custom-linters">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>UIx exposes a public API to register custom linters, so that you can have your own linting rules specific to your project. There are three types of linters in UIx:</p>
 <ul>
 <li>Component linters <code>uix.linter/lint-component</code> — those execute on entire <code>defui</code> form</li>
 <li>Element linters <code>uix.linter/lint-element</code> — execute per <code>$</code> form</li>
 <li>Hook linters <code>uix.linter/lint-hook-with-deps</code> — execute for every Hook form that takes deps (<code>use-effect</code>, <code>use-callback</code>, etc.)</li>
 </ul>
 <p>See <a href="https://github.com/pitch-io/uix/blob/master/core/dev/uix/linters.clj">core/dev/uix/linters.clj</a> for a set of complete examples.</p>
-<h1 id="clj-kondo">clj-kondo</h1>
-<p>UIx has importable configuration for clj-kondo. You can important the configuration with:</p>
+
+            <h1 class="heading">
+            clj-kondo
+              <a class="anchor" href="#clj-kondo">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>UIx has importable configuration for clj-kondo. You can important the configuration with:</p>
 <pre><code class="language-bash">clj-kondo --lint &quot;$(clojure -Spath)&quot; --copy-configs --skip-lint
 </code></pre>
 <p>There is only one custom hook, which validates the arguments passed to <code>uix.core/$</code>.</p>

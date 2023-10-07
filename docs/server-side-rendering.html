@@ -30,8 +30,13 @@
         </div>
       </div>
     </header>
-    <main><h1 id="server-side-rendering">Server-side rendering</h1>
-<ul>
+    <main>
+            <h1 class="heading">
+            Server-side rendering
+              <a class="anchor" href="#server-side-rendering">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><ul>
 <li><a href="#public-api">Public API</a></li>
 <li><a href="#how-to-write-cross-platform-ui-code">How to write cross-platform UI code</a></li>
 <li><a href="#hooks">Hooks</a></li>
@@ -48,14 +53,24 @@
 (dom.server/render-to-static-markup ($ title-bar))
 ;; &quot;&lt;div class=\&quot;title-bar\&quot;&gt;&lt;h1&gt;Hello&lt;/h1&gt;&lt;/div&gt;&quot;
 </code></pre>
-<h2 id="public-api">Public API</h2>
-<p>Similar to <code>react-dom/server</code> API there are two functions to render UIx components to HTML string and their streaming counterparts:</p>
+
+            <h2 class="heading">
+            Public API
+              <a class="anchor" href="#public-api">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>Similar to <code>react-dom/server</code> API there are two functions to render UIx components to HTML string and their streaming counterparts:</p>
 <ul>
 <li><code>uix.dom.server/render-to-static-markup</code> and <code>uix.dom.server/render-to-static-stream</code> — generates HTML string, can be used for templating</li>
 <li><code>uix.dom.server/render-to-string</code> and <code>uix.dom.server/render-to-stream</code> — generates HTML string that will be hydarated by React on the front-end, when HTML document is loaded</li>
 </ul>
-<h2 id="how-to-write-cross-platform-ui-code">How to write cross-platform UI code</h2>
-<p>When UI should be rendered on JVM and hydrated on the client, that essentially means that same UI code should be able to run in both Clojure/JVM and ClojureScript/JS environments.</p>
+
+            <h2 class="heading">
+            How to write cross-platform UI code
+              <a class="anchor" href="#how-to-write-cross-platform-ui-code">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>When UI should be rendered on JVM and hydrated on the client, that essentially means that same UI code should be able to run in both Clojure/JVM and ClojureScript/JS environments.</p>
 <p>For that it&#39;s recommended to put shared code in <code>.cljc</code> namespaces and use <a href="https://clojure.org/guides/reader_conditionals">reader conditionals</a> for platform specific code.</p>
 <pre><code class="language-clojure">;; ui.cljc
 (ns app.ui
@@ -90,8 +105,13 @@
 ;; Hydrates server generated HTML into dynamic React UI
 (dom.client/hydrate-root (js/document.getElementById &quot;root&quot;) ($ ui/title-bar))
 </code></pre>
-<h2 id="hooks">Hooks</h2>
-<p>Only a subset of Hooks runs when server rendering. Read React docs to understand how hooks work when server rendering.</p>
+
+            <h2 class="heading">
+            Hooks
+              <a class="anchor" href="#hooks">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>Only a subset of Hooks runs when server rendering. Read React docs to understand how hooks work when server rendering.</p>
 </main>
     <footer class="page-footer"><a class="nav-link" href="migrating-from-reagent.html">👈 Prev “Migrating From Reagent”</a> <a class="nav-link" href="hot-reloading.html">Next “Hot Reloading” 👉</a></footer>
     <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
