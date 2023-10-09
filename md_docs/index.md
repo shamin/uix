@@ -13,6 +13,7 @@
 - [Hot reloading](hot-reloading.html)
 - [React DevTools](react-devtools.html)
 - [Code linting](code-linting.html)
+- [Differences from Reagent](differences-from-reagent.html)
 - [Utilities](utilities.html)
 - [Examples](https://github.com/pitch-io/uix/blob/master/core/dev/uix/examples.cljs)
 - [Internals](internals.html)

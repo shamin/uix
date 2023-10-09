@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="shortcut icon"
+      href="data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Ccircle r='8' cx='8' cy='8' fill='%23c1f3f9'%3E%3C/circle%3E%3C/svg%3E"
+    />
+    <title>UIx | Differences From Reagent</title>
+    <link rel="preconnect" href="https://rsms.me/" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="stylesheet" href="main.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/default.min.css"
+    />
+  </head>
+  <body>
+    <header class="page-header">
+      <div class="page-header-inner">
+        <a class="title" href="https://pitch-io.github.io/uix/docs"
+          >UIx | Idiomatic ClojureScript interface to modern React.js</a
+        >
+        <div class="nav">
+          <a href="https://www.clojurescript.studio/p/default-uix">Sandbox</a>
+          <a
+            href="https://github.com/sponsors/roman01la"
+            class="icon"
+            title="Support"
+          >
+            <img src="sponsor.svg" alt="" />
+          </a>
+          <a
+            href="https://github.com/pitch-io/uix"
+            class="icon"
+            title="Source code"
+          >
+            <img src="github.svg" alt="" />
+          </a>
+          <div class="version">v1.0.0</div>
+        </div>
+      </div>
+    </header>
+    <main>
+            <h1 class="heading">
+            Differences from Reagent
+              <a class="anchor" href="#differences-from-reagent">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h1><p>Fundamentally UIx is different from Reagent in a way how it tries to be as close to React as possible. This way switching from JavaScript to ClojureScript becomes less of a painful process. You will end up in a somewhat familiar environment where everything you know about React is still applicable.</p>
+
+            <h2 class="heading">
+            Functional React components by default
+              <a class="anchor" href="#functional-react-components-by-default">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>UIx components are compiled into functional React components (plain JS functions). It&#39;s still possible to create class-based components using <code>uix.core/create-class</code>.</p>
+
+            <h2 class="heading">
+            JSX-like static UI structure
+              <a class="anchor" href="#jsx-like-static-ui-structure">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>Unlike in Reagent, React elements in UIx are created using <code>$</code> macro which enforces static UI structure that is easy to reason about. While Hiccup is quite flexible, it also makes it easy to write highly dynamic code that composes vector elements at runtime which makes it harder to read and maintain.</p>
+
+            <h2 class="heading">
+            Hooks
+              <a class="anchor" href="#hooks">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>UIx exposes React hooks, unlike Reagent where it&#39;s common to use RAtoms as state primitives.</p>
+
+            <h2 class="heading">
+            Syntax
+              <a class="anchor" href="#syntax">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>There&#39;s only one way to create a component in UIx, using <code>defui</code> hook. No form-1-2-3 components. With hooks you have all of the features that form-1-2-3 components provide.</p>
+
+            <h2 class="heading">
+            Speed
+              <a class="anchor" href="#speed">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>UIx is generally 1.6x slower than plain React, mainly due to use of Clojure&#39;s data structures when passing data between components, while Reagent is 2.7x slower due to the same reasons and additionally because of runtime interpreted Hiccup, and a gluing layer that connects React components to RAtoms. Hooks-based Reagent components are even slower.</p>
+<p>Here&#39;s comparison for the amount of work React, UIx and Reagent are doing when running a synthetic benchmark.</p>
+<img src="perf.jpg" width="500" />
+
+
+            <h2 class="heading">
+            Components are not memoized by default
+              <a class="anchor" href="#components-are-not-memoized-by-default">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>While it can be tempting to memoize every component because props are immutable maps, UIx does not memoize components by default. Often in React and UIx it&#39;s cheaper to re-run a component instead of comparing props map. Immutable data may still come at cost, where in the worst case data structures are fully traversed, essentially performing deep equals.</p>
+
+            <h2 class="heading">
+            No custom scheduling mechanism
+              <a class="anchor" href="#no-custom-scheduling-mechanism">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>In UIx, UI update cycle is managed by React. Reagent is however using <code>requestAnimationFrame</code> to enforce <em>always</em> asynchronous UI updates, which leads to issues when user input should be handled synchronously and thus requires additional layer in input fields to fix this problem.</p>
+
+            <h2 class="heading">
+            Built-in linter
+              <a class="anchor" href="#built-in-linter">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>UIx has a built-in linter that works well thanks to non ambiguous and static UI structure enforced by <code>$</code> macro.</p>
+
+            <h2 class="heading">
+            SSR on JVM
+              <a class="anchor" href="#ssr-on-jvm">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>UIx components can be rendered on JVM using serializer borrowed from Rum.</p>
+
+            <h2 class="heading">
+            More
+              <a class="anchor" href="#more">
+                <img src="/link.svg" alt="" />
+              </a>
+            </h2><p>Learn more about differences and migration path from <a href="https://pitch.com/public/821ed924-6fe6-4ce7-9d75-a63f1ee3c61f">this slide deck</a>.</p>
+</main>
+    <footer class="page-footer"><a class="nav-link" href="code-linting.html">👈 Prev “Code Linting”</a> <a class="nav-link" href="utilities.html">Next “Utilities” 👉</a></footer>
+    <script src="https://unpkg.com/@highlightjs/cdn-assets@11.8.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/languages/clojure.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+  </body>
+</html>

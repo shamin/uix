@@ -46,6 +46,7 @@ allFiles = [
   "hot-reloading.md",
   "react-devtools.md",
   "code-linting.md",
+  "differences-from-reagent.md",
   "utilities.md",
   "internals.md",
   "react-native.md",
