@@ -129,6 +129,22 @@ p img {
 .heading:hover .anchor {
   display: inline-block;
 }
+#testimonials {
+  margin: 128px auto;
+  padding: 0;
+  list-style: none;
+  max-width: 800px;
+  text-align: center;
+}
+#testimonials li {
+  font-size: 14px;
+  color: #3d3d3d;
+  margin: 8px 0;
+}
+#testimonials span {
+  color: #767676;
+  font-size: 12px;
+}
 @media (max-width: 800px) {
   .page-header-inner {
     flex-direction: column;
